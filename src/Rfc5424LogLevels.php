@@ -5,7 +5,8 @@ namespace Stefna\Logger;
 /**
  * Logging levels from syslog protocol defined in RFC 5424
  */
-interface Rfc5424LogLevels {
+interface Rfc5424LogLevels
+{
 	public const EMERGENCY = 0;
 	public const ALERT = 1;
 	public const CRITICAL = 2;

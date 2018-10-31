@@ -6,9 +6,6 @@ use Psr\Log\AbstractLogger;
 
 class CallbackLogger extends AbstractLogger
 {
-	/**
-	 * @var callable
-	 */
 	private $logger;
 
 	public function __construct(callable $logger)
@@ -19,7 +16,7 @@ class CallbackLogger extends AbstractLogger
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = array()): void
+	public function log($level, $message, array $context = []): void
 	{
 		$logger = $this->logger;
 		$logger($level, $message, $context);

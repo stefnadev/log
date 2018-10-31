@@ -30,8 +30,7 @@ class Logger extends AbstractLogger
 		CacheInterface $cache,
 		?string $interval = null,
 		?LoggerInterface $limitLogger = null
-	)
-	{
+	) {
 		$this->logger = $logger;
 		$this->cache = $cache;
 		$this->interval = $interval ?? self::INTERVAL_DAY;
