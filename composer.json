@@ -1,0 +1,33 @@
+{
+    "name": "stefna/log",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Andreas Sundqvist",
+            "email": "andreas@stefna.is"
+        }
+    ],
+    "require": {
+        "psr/log": "^1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7",
+        "stefna/codestyle": "^1.2",
+        "monolog/monolog": "^1.23"
+    },
+    "autoload": {
+        "psr-4": {
+            "Stefna\\Logger\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Stefna\\Logger\\": "tests/"
+        }
+    },
+    "description": "Psr-3 log implementation for stefna.is",
+    "scripts": {
+        "check": "./vendor/bin/phpcs --standard=vendor/stefna/codestyle/library.xml src/ tests/",
+        "fix": "./vendor/bin/phpcbf --standard=vendor/stefna/codestyle/library.xml src/ tests/"
+    }
+}
