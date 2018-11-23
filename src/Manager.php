@@ -36,31 +36,30 @@ class Manager
 
 	public function pushProcessor(callable $callback, string $channel = null): self
 	{
-		array_unshift($this->monologProcessors, $callback);
-
-		foreach (self::$monologInstances as $name => $instance) {
-			if ($channel === null) {
-				$instance->pushProcessor($callback);
-			}
-			elseif ($name === $channel) {
+		if ($channel === null) {
+			array_unshift($this->monologProcessors, $callback);
+			foreach (self::$monologInstances as $name => $instance) {
 				$instance->pushProcessor($callback);
 			}
 		}
+		elseif (isset(self::$monologInstances[$channel])) {
+			self::$monologInstances[$channel]->pushProcessor($callback);
+		}
+
 
 		return $this;
 	}
 
 	public function pushHandler(HandlerInterface $handler, string $channel = null): self
 	{
-		array_unshift($this->monologHandlers, $handler);
-
-		foreach (self::$monologInstances as $name => $instance) {
-			if ($channel === null) {
+		if ($channel === null) {
+			array_unshift($this->monologHandlers, $handler);
+			foreach (self::$monologInstances as $name => $instance) {
 				$instance->pushHandler($handler);
 			}
-			elseif ($name === $channel) {
-				$instance->pushHandler($handler);
-			}
+		}
+		elseif (isset(self::$monologInstances[$channel])) {
+			self::$monologInstances[$channel]->pushHandler($handler);
 		}
 
 		return $this;
