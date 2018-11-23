@@ -4,10 +4,10 @@ namespace Stefna\Logger\Filters;
 
 class ExcludeLogLevelFilter implements FilterInterface
 {
-	/** @var string */
+	/** @var string[] */
 	private $excludedLogLevel;
 
-	public function __construct(string $excludedLogLevel)
+	public function __construct(string ...$excludedLogLevel)
 	{
 		$this->excludedLogLevel = $excludedLogLevel;
 	}
@@ -17,6 +17,6 @@ class ExcludeLogLevelFilter implements FilterInterface
 	 */
 	public function __invoke($level, $message, array $context = []): bool
 	{
-		return $this->excludedLogLevel !== $level;
+		return !\in_array($level, $this->excludedLogLevel, true);
 	}
 }

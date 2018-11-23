@@ -2,8 +2,6 @@
 
 namespace Stefna\Logger\Filters;
 
-use Psr\Log\LoggerInterface;
-
 class FilterFactory
 {
 	private static $map = [
