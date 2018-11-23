@@ -5,6 +5,7 @@ namespace Stefna\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Stefna\Logger\Config\ConfigInterface;
+use Stefna\Logger\Exceptions\ConfigurationNotDefined;
 use Stefna\Logger\Exceptions\ManagerNotDefined;
 
 class Logger
@@ -13,7 +14,7 @@ class Logger
 	private static $manager;
 	private static $config = [];
 
-	public static function setManager(LoggerInterface $manager): void
+	public static function setManager(Manager $manager): void
 	{
 		self::$manager = $manager;
 	}
@@ -21,6 +22,15 @@ class Logger
 	public static function setChannelConfig(string $channel, ConfigInterface $config): void
 	{
 		self::$config[$channel] = $config;
+	}
+
+	public static function getChannelConfig(string $channel)
+	{
+		if (isset(self::$config[$channel])) {
+			return self::$config[$channel];
+		}
+
+		throw new ConfigurationNotDefined($channel);
 	}
 
 	public static function setGlobalConfig(ConfigInterface ...$configs): void
