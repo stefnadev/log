@@ -27,7 +27,7 @@ class Manager
 
 	private $filterFactory;
 
-	public function __construct(LoggerInterface $mainLogger, FilterFactory $filterFactory)
+	public function __construct(\Monolog\Logger $mainLogger, FilterFactory $filterFactory)
 	{
 		self::$monologInstances[self::MAIN_LOGGER] = $mainLogger;
 		$this->monologProcessors[] = new ChannelProcessor();
