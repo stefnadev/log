@@ -2,8 +2,6 @@
 
 namespace Stefna\Logger\Config;
 
-use Stefna\Logger\Filters\FilterInterface;
-
 interface ConfigInterface
 {
 	public function getProcessors(): array;
