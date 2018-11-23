@@ -12,6 +12,7 @@ class FilterFactory
 		'max-level' => [MaxLogLevelFilter::class, ['level']],
 		'min-level' => [MinLogLevelFilter::class, ['level']],
 		'log-level' => [LogLevelRangeFilter::class, ['min', 'max']],
+		'time-limit' => [TimeLimitFilter::class, ['cache', 'interval']],
 	];
 
 	public function createFilter(array $filterConfig): ?FilterInterface
