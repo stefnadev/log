@@ -34,6 +34,11 @@ class Manager
 		$this->filterFactory = $filterFactory;
 	}
 
+	public function getMainLogger(): \Monolog\Logger
+	{
+		return self::$monologInstances[self::MAIN_LOGGER];
+	}
+
 	public function pushProcessor(callable $callback, string $channel = null): self
 	{
 		if ($channel === null) {
