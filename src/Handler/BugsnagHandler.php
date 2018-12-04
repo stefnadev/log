@@ -28,8 +28,9 @@ class BugsnagHandler extends AbstractProcessingHandler
 	];
 
 	protected $client;
+	private $includeContext;
 
-	public function __construct(\Bugsnag\Client $client, $level = Logger::ERROR, $bubble = true)
+	public function __construct(BugsnagClient $client, int $level = Logger::ERROR, bool $bubble = true, bool $includeContext = false)
 	{
 		parent::__construct($level, $bubble);
 		$this->client = $client;
@@ -53,6 +54,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 				$stacktrace->removeFrame(0);
 			}
 		});
+		$this->includeContext = $includeContext;
 	}
 
 	/**
@@ -68,10 +70,14 @@ class BugsnagHandler extends AbstractProcessingHandler
 		if (isset($record['context']['exception'])) {
 			$this->client->notifyException(
 				$record['context']['exception'],
-				function (\Bugsnag\Report $report) use ($record, $severity) {
+				function (Report $report) use ($record, $severity) {
 					$report->setSeverity($severity);
 					if (isset($record['extra'])) {
 						$report->setMetaData($record['extra']);
+					}
+					if ($this->includeContext && isset($record['context'])) {
+						unset($record['context']['exception']);
+						$report->setMetaData($record['context']);
 					}
 				}
 			);
@@ -80,10 +86,14 @@ class BugsnagHandler extends AbstractProcessingHandler
 			$this->client->notifyError(
 				(string) $record['message'],
 				(string) $record['formatted'],
-				function (\Bugsnag\Report $report) use ($record, $severity) {
+				function (Report $report) use ($record, $severity) {
 					$report->setSeverity($severity);
 					if (isset($record['extra'])) {
 						$report->setMetaData($record['extra']);
+					}
+					if ($this->includeContext && isset($record['context'])) {
+						unset($record['context']['exception']);
+						$report->setMetaData($record['context']);
 					}
 				}
 			);
