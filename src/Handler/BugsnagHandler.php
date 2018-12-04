@@ -2,6 +2,8 @@
 
 namespace Stefna\Logger\Handler;
 
+use Bugsnag\Client as BugsnagClient;
+use Bugsnag\Report;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 
@@ -31,8 +33,27 @@ class BugsnagHandler extends AbstractProcessingHandler
 	{
 		parent::__construct($level, $bubble);
 		$this->client = $client;
-	}
+		$this->client->registerCallback(function (Report $report) {
+			$stacktrace = $report->getStacktrace();
 
+			// Monolog uses MonoSnag for logs, and bugsnag handler logs directly
+			$isAMonologHandledLog = $stacktrace->getFrames()[0]['method'] === static::class . '::write';
+
+			if (!$isAMonologHandledLog) {
+				// Do nothing
+				return;
+			}
+
+			// Remove The first frame
+			$stacktrace->removeFrame(0);
+
+			// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
+			while(strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
+				  strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0) {
+				$stacktrace->removeFrame(0);
+			}
+		});
+	}
 
 	/**
 	 * @inheritdoc
