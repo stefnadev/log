@@ -71,3 +71,24 @@ $filters = [
 $logger = \Stefna\Logger\Logger::getLogger('test-channel');
 
 ```
+
+## Setup of a crash logger
+
+```php
+<?php declare(strict_types=1);
+
+$logger = new SimpleFileLogger('path/to/save/crash.log');
+
+$crashLogger = new BufferFilterLogger(
+    $logger,
+    new ActivateLevelFilter(LogLevel::ERROR)
+);
+
+//will not add to log file
+$crashLogger->debug('tset');
+
+// will add all message prior and after to this to the log
+// so we get a complete story of what happend during the execution
+$crashLogger->error('error');
+
+```
