@@ -78,6 +78,8 @@ $logger = \Stefna\Logger\Logger::getLogger('test-channel');
 <?php declare(strict_types=1);
 
 $logger = new SimpleFileLogger('path/to/save/crash.log');
+//or
+$logger = new SystemErrorLogger();
 
 $crashLogger = new BufferFilterLogger(
     $logger,
