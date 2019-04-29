@@ -12,7 +12,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 	public const IGNORE = 'bugsnagHandlerIgnoreField';
 
 	/**
-	 * monolog error codes mapped on to bugSnag severities.
+	 * Monolog error codes mapped on to bugSnag severities.
 	 *
 	 * @var string[]
 	 */
@@ -24,14 +24,18 @@ class BugsnagHandler extends AbstractProcessingHandler
 		Logger::ERROR     => 'error',
 		Logger::CRITICAL  => 'error',
 		Logger::ALERT     => 'error',
-		Logger::EMERGENCY => 'error'
+		Logger::EMERGENCY => 'error',
 	];
 
 	protected $client;
 	private $includeContext;
 
-	public function __construct(BugsnagClient $client, int $level = Logger::ERROR, bool $bubble = true, bool $includeContext = false)
-	{
+	public function __construct(
+		BugsnagClient $client,
+		int $level = Logger::ERROR,
+		bool $bubble = true,
+		bool $includeContext = false
+	) {
 		parent::__construct($level, $bubble);
 		$this->client = $client;
 		$this->client->registerCallback(function (Report $report) {
@@ -49,8 +53,9 @@ class BugsnagHandler extends AbstractProcessingHandler
 			$stacktrace->removeFrame(0);
 
 			// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
-			while(strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
-				  strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0) {
+			while (strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
+					strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0
+			) {
 				$stacktrace->removeFrame(0);
 			}
 		});

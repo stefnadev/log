@@ -30,17 +30,11 @@ final class LogLevelTranslator
 		LogLevel::DEBUG => Rfc5424LogLevels::DEBUG,
 	];
 
-	/**
-	 * @return array
-	 */
 	public static function getRfc5424Levels(): array
 	{
 		return self::$levelsB;
 	}
 
-	/**
-	 * @return array
-	 */
 	public static function getLevelTokens(): array
 	{
 		return self::$levelsA;
