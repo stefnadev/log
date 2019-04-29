@@ -77,6 +77,6 @@ final class LogLevelTranslator
 		if (array_key_exists($level, $levels)) {
 			return $levels[$level];
 		}
-		throw new LogLevelNotFoundException("Log-level not found: {$level}");
+		throw new LogLevelNotFoundException($level);
 	}
 }

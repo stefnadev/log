@@ -43,7 +43,7 @@ class Logger
 	public static function getManager(): Manager
 	{
 		if (self::$manager === null) {
-			throw new ManagerNotDefined('');
+			throw new ManagerNotDefined();
 		}
 		return self::$manager;
 	}

@@ -21,7 +21,7 @@ class BufferFilterLogger extends BufferLogger
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = [])
+	public function log($level, $message, array $context = []): void
 	{
 		parent::log($level, $message, $context);
 
