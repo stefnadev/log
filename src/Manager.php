@@ -51,7 +51,6 @@ class Manager
 			self::$monologInstances[$channel]->pushProcessor($callback);
 		}
 
-
 		return $this;
 	}
 

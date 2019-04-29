@@ -27,7 +27,7 @@ class ChannelWrapper extends AbstractLogger
 	 *
 	 * @return void
 	 */
-	public function log($level, $message, array $context = [])
+	public function log($level, $message, array $context = []): void
 	{
 		$context['channel'] = $this->channel;
 		$this->logger->log($level, $message, $context);
