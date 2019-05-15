@@ -108,15 +108,17 @@ class Manager
 
 				if ($specialLogLevel !== null) {
 					$handlers = $logger->getHandlers();
-					if (method_exists($handlers[0], 'setLevel')) {
+					$mainHandler = end($handlers);
+					$mainKey = key($handlers);
+					if (method_exists($mainHandler, 'setLevel')) {
 						// We assume the first handler is the main handler and that's fine to clone and modify it
 						// We don't want to modify the original handler because we shouldn't change the log level for
 						// entire application
 
 						/** @var AbstractHandler $newHandler */
-						$newHandler = clone $handlers[0];
+						$newHandler = clone $mainHandler;
 						$newHandler->setLevel($specialLogLevel);
-						$handlers[0] = $newHandler;
+						$handlers[$mainKey] = $newHandler;
 						$logger->setHandlers($handlers);
 					}
 				}
