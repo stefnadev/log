@@ -53,14 +53,16 @@ $manager = new \Stefna\Logger\Manager($monolog, new \Stefna\Logger\Filters\Filte
 \Stefna\Logger\Logger::setManager($manager);
 
 $filters = [
-	['min-level', \Psr\Log\LogLevel::ALERT],
+	['min-level', ['level' => \Psr\Log\LogLevel::ALERT]],
 	[
 		'callback',
-		function(string $level, string $message, array $context) {
-			return isset($context['exception']);
-		},
+		[
+			'callback' => function(string $level, string $message, array $context) {
+				return isset($context['exception']);
+			},
+		],
 	],
-	['time-limit', [$simpleCache, new DateInterval('P1D')]]
+	['time-limit', ['cache' => $simpleCache, 'interval' => new DateInterval('P1D')]]
 ];
 
 \Stefna\Logger\Logger::setChannelConfig(
