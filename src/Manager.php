@@ -102,22 +102,30 @@ class Manager
 			$filters[] = $filterInstance;
 		}
 
-		if (count($config->getHandlers()) || count($config->getProcessors()) || $specialLogLevel !== null) {
+		if ($specialLogLevel !== null || count($config->getHandlers()) || count($config->getProcessors())) {
 			if (!isset(self::$monologInstances[$config->getName()])) {
 				$logger = self::$monologInstances[self::MAIN_LOGGER]->withName($config->getName());
+
+				if ($specialLogLevel !== null) {
+					$handlers = $logger->getHandlers();
+					if (method_exists($handlers[0], 'setLevel')) {
+						// We assume the first handler is the main handler and that's fine to clone and modify it
+						// We don't want to modify the original handler because we shouldn't change the log level for
+						// entire application
+
+						/** @var AbstractHandler $newHandler */
+						$newHandler = clone $handlers[0];
+						$newHandler->setLevel($specialLogLevel);
+						$handlers[0] = $newHandler;
+						$logger->setHandlers($handlers);
+					}
+				}
 
 				foreach ($config->getHandlers() as $handler) {
 					$logger->pushHandler($handler);
 				}
 				foreach ($config->getProcessors() as $processor) {
 					$logger->pushProcessor($processor);
-				}
-				if ($specialLogLevel !== null) {
-					foreach ($logger->getHandlers() as $handler) {
-						if (method_exists($handler, 'setLevel')) {
-							$handler->setLevel($filterInstance->getMinLevel());
-						}
-					}
 				}
 				self::$monologInstances[$config->getName()] = $logger;
 			}
