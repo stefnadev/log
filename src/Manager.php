@@ -75,11 +75,9 @@ class Manager
 	{
 		if (!isset(self::$loggerInstances[$channel])) {
 			if ($config) {
-				error_log('Create logger from config: '.$channel);
 				self::$loggerInstances[$channel] = $this->createLoggerFromConfig($config);
 			}
 			else {
-				error_log('Create logger: '.$channel);
 				self::$loggerInstances[$channel] = $this->createLogger($channel);
 			}
 		}
