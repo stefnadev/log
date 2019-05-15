@@ -3,9 +3,11 @@
 namespace Stefna\Logger;
 
 use Monolog\Handler\HandlerInterface;
+use Monolog\Handler\AbstractHandler;
 use Psr\Log\LoggerInterface;
 use Stefna\Logger\Config\ConfigInterface;
 use Stefna\Logger\Filters\FilterFactory;
+use Stefna\Logger\Filters\LogLevelRangeFilter;
 use Stefna\Logger\Logger\CallbackLogger;
 use Stefna\Logger\Logger\FilterLogger;
 use Stefna\Logger\Processor\ChannelProcessor;
@@ -90,9 +92,34 @@ class Manager
 
 	public function createLoggerFromConfig(ConfigInterface $config): LoggerInterface
 	{
-		if (count($config->getHandlers()) || count($config->getProcessors())) {
+		$specialLogLevel = null;
+		$filters = [];
+		foreach ($config->getFilters() as $filter) {
+			$filterInstance = $this->filterFactory->createFilter($filter);
+			if ($filterInstance instanceof LogLevelRangeFilter) {
+				$specialLogLevel = $filterInstance->getMinLevel();
+			}
+			$filters[] = $filterInstance;
+		}
+
+		if ($specialLogLevel !== null || count($config->getHandlers()) || count($config->getProcessors())) {
 			if (!isset(self::$monologInstances[$config->getName()])) {
 				$logger = self::$monologInstances[self::MAIN_LOGGER]->withName($config->getName());
+
+				if ($specialLogLevel !== null) {
+					$handlers = $logger->getHandlers();
+					if (method_exists($handlers[0], 'setLevel')) {
+						// We assume the first handler is the main handler and that's fine to clone and modify it
+						// We don't want to modify the original handler because we shouldn't change the log level for
+						// entire application
+
+						/** @var AbstractHandler $newHandler */
+						$newHandler = clone $handlers[0];
+						$newHandler->setLevel($specialLogLevel);
+						$handlers[0] = $newHandler;
+						$logger->setHandlers($handlers);
+					}
+				}
 
 				foreach ($config->getHandlers() as $handler) {
 					$logger->pushHandler($handler);
@@ -110,12 +137,7 @@ class Manager
 			$logger = $this->createLogger($config->getName());
 		}
 
-		if (count($config->getFilters())) {
-			$filters = [];
-			foreach ($config->getFilters() as $filter) {
-				$filters[] = $this->filterFactory->createFilter($filter);
-			}
-
+		if (count($filters)) {
 			$logger = new FilterLogger($logger, ...$filters);
 		}
 

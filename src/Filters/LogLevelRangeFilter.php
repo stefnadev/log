@@ -28,4 +28,14 @@ class LogLevelRangeFilter implements FilterInterface
 		$level = 7 - LogLevelTranslator::getLevelNo($psrLevel);
 		return $this->minLevel <= $level && $this->maxLevel >= $level;
 	}
+
+	public function getMinLevel(): int
+	{
+		return $this->minLevel;
+	}
+
+	public function getMaxLevel(): int
+	{
+		return $this->maxLevel;
+	}
 }
