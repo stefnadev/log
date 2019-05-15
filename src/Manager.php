@@ -94,14 +94,12 @@ class Manager
 	{
 		$specialLogLevel = null;
 		$filters = [];
-		if (count($config->getFilters())) {
-			foreach ($config->getFilters() as $filter) {
-				$filterInstance = $this->filterFactory->createFilter($filter);
-				if ($filterInstance instanceof LogLevelRangeFilter) {
-					$specialLogLevel = $filterInstance->getMinLevel();
-				}
-				$filters[] = $filterInstance;
+		foreach ($config->getFilters() as $filter) {
+			$filterInstance = $this->filterFactory->createFilter($filter);
+			if ($filterInstance instanceof LogLevelRangeFilter) {
+				$specialLogLevel = $filterInstance->getMinLevel();
 			}
+			$filters[] = $filterInstance;
 		}
 
 		if (count($config->getHandlers()) || count($config->getProcessors()) || $specialLogLevel !== null) {
