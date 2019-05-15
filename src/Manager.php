@@ -3,9 +3,11 @@
 namespace Stefna\Logger;
 
 use Monolog\Handler\HandlerInterface;
+use Monolog\Handler\AbstractHandler;
 use Psr\Log\LoggerInterface;
 use Stefna\Logger\Config\ConfigInterface;
 use Stefna\Logger\Filters\FilterFactory;
+use Stefna\Logger\Filters\LogLevelRangeFilter;
 use Stefna\Logger\Logger\CallbackLogger;
 use Stefna\Logger\Logger\FilterLogger;
 use Stefna\Logger\Processor\ChannelProcessor;
@@ -73,9 +75,11 @@ class Manager
 	{
 		if (!isset(self::$loggerInstances[$channel])) {
 			if ($config) {
+				error_log('Create logger from config: '.$channel);
 				self::$loggerInstances[$channel] = $this->createLoggerFromConfig($config);
 			}
 			else {
+				error_log('Create logger: '.$channel);
 				self::$loggerInstances[$channel] = $this->createLogger($channel);
 			}
 		}
@@ -90,7 +94,19 @@ class Manager
 
 	public function createLoggerFromConfig(ConfigInterface $config): LoggerInterface
 	{
-		if (count($config->getHandlers()) || count($config->getProcessors())) {
+		$specialLogLevel = null;
+		$filters = [];
+		if (count($config->getFilters())) {
+			foreach ($config->getFilters() as $filter) {
+				$filterInstance = $this->filterFactory->createFilter($filter);
+				if ($filterInstance instanceof LogLevelRangeFilter) {
+					$specialLogLevel = $filterInstance->getMinLevel();
+				}
+				$filters[] = $filterInstance;
+			}
+		}
+
+		if (count($config->getHandlers()) || count($config->getProcessors()) || $specialLogLevel !== null) {
 			if (!isset(self::$monologInstances[$config->getName()])) {
 				$logger = self::$monologInstances[self::MAIN_LOGGER]->withName($config->getName());
 
@@ -99,6 +115,13 @@ class Manager
 				}
 				foreach ($config->getProcessors() as $processor) {
 					$logger->pushProcessor($processor);
+				}
+				if ($specialLogLevel !== null) {
+					foreach ($logger->getHandlers() as $handler) {
+						if (method_exists($handler, 'setLevel')) {
+							$handler->setLevel($filterInstance->getMinLevel());
+						}
+					}
 				}
 				self::$monologInstances[$config->getName()] = $logger;
 			}
@@ -110,12 +133,7 @@ class Manager
 			$logger = $this->createLogger($config->getName());
 		}
 
-		if (count($config->getFilters())) {
-			$filters = [];
-			foreach ($config->getFilters() as $filter) {
-				$filters[] = $this->filterFactory->createFilter($filter);
-			}
-
+		if (count($filters)) {
 			$logger = new FilterLogger($logger, ...$filters);
 		}
 
