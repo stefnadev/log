@@ -17,7 +17,7 @@ class BufferLogger extends AbstractLogger
 	 *
 	 * @return void
 	 */
-	public function log($level, $message, array $context = [])
+	public function log($level, $message, array $context = []): void
 	{
 		$this->buffer[] = [$level, $message, $context];
 	}

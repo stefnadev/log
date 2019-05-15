@@ -16,7 +16,9 @@ class CallableContextProcessor
 				try {
 					$value = $value();
 				}
-				catch (\Throwable $t) {}
+				catch (\Throwable $t) {
+					//ignore errors
+				}
 			}
 		}
 

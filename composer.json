@@ -30,7 +30,7 @@
     },
     "description": "Psr-3 log implementation for stefna.is",
     "scripts": {
-        "check": "./vendor/bin/phpcs --standard=vendor/stefna/codestyle/library.xml src/ tests/",
-        "fix": "./vendor/bin/phpcbf --standard=vendor/stefna/codestyle/library.xml src/ tests/"
+        "check": "./vendor/bin/phpcs --standard=vendor/stefna/codestyle/library.xml src/",
+        "fix": "./vendor/bin/phpcbf --standard=vendor/stefna/codestyle/library.xml src/"
     }
 }

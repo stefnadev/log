@@ -15,7 +15,7 @@ class CallbackFilter implements FilterInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function __invoke($level, $message, array $context = []): bool
+	public function __invoke(string $level, string $message, array $context = []): bool
 	{
 		$callback = $this->callback;
 		return (bool)$callback($level, $message, $context);

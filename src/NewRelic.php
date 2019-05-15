@@ -4,7 +4,7 @@ namespace Stefna\Logger;
 
 class NewRelic
 {
-	/** @var bool */
+	/** @var bool|null */
 	private static $enabled;
 
 	public static function enabled(): bool

@@ -26,6 +26,7 @@ class FilterFactory
 				throw new \InvalidArgumentException("Missing argument: '$arg'");
 			}
 		}
-		return new $cls(...$filterArgs);
+
+		return new $cls(...array_values($filterArgs));
 	}
 }

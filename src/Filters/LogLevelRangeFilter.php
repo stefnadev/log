@@ -23,9 +23,19 @@ class LogLevelRangeFilter implements FilterInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function __invoke($psrLevel, $message, array $context = []): bool
+	public function __invoke(string $psrLevel, string $message, array $context = []): bool
 	{
 		$level = 7 - LogLevelTranslator::getLevelNo($psrLevel);
 		return $this->minLevel <= $level && $this->maxLevel >= $level;
+	}
+
+	public function getMinLevel(): int
+	{
+		return $this->minLevel;
+	}
+
+	public function getMaxLevel(): int
+	{
+		return $this->maxLevel;
 	}
 }

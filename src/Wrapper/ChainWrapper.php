@@ -29,7 +29,7 @@ class ChainWrapper extends AbstractLogger
 	 *
 	 * @return void
 	 */
-	public function log($level, $message, array $context = [])
+	public function log($level, $message, array $context = []): void
 	{
 		foreach ($this->loggers as $logger) {
 			$logger->log($level, $message, $context);

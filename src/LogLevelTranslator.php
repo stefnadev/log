@@ -30,17 +30,11 @@ final class LogLevelTranslator
 		LogLevel::DEBUG => Rfc5424LogLevels::DEBUG,
 	];
 
-	/**
-	 * @return array
-	 */
 	public static function getRfc5424Levels(): array
 	{
 		return self::$levelsB;
 	}
 
-	/**
-	 * @return array
-	 */
 	public static function getLevelTokens(): array
 	{
 		return self::$levelsA;
@@ -77,6 +71,6 @@ final class LogLevelTranslator
 		if (array_key_exists($level, $levels)) {
 			return $levels[$level];
 		}
-		throw new LogLevelNotFoundException("Log-level not found: {$level}");
+		throw new LogLevelNotFoundException((string)$level);
 	}
 }

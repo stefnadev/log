@@ -22,7 +22,7 @@ class FilterLogger extends AbstractLogger
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = [])
+	public function log($level, $message, array $context = []): void
 	{
 		foreach ($this->filters as $filter) {
 			if (!$filter($level, $message, $context)) {
