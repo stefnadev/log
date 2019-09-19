@@ -1,0 +1,12 @@
+<phpunit bootstrap="./phpunit-bootstrap.php">
+    <testsuites>
+        <testsuite name="stefna-logger">
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
