@@ -73,4 +73,34 @@ class BugsnagHandlerTest extends TestCase
 			'not_included' => true,
 		]);
 	}
+
+	public function testAddBreadcrumb(): void
+	{
+		$context = [
+			'included' => true,
+		];
+
+		$report = $this->createMock(Report::class);
+		$report->expects($this->once())->method('setSeverity')->with('error');
+		$report->expects($this->exactly(2))->method('setMetaData')->withConsecutive([[], true], [$context, true]);
+
+		$this->client->expects($this->once())->method('leaveBreadcrumb')->with(
+			'Log DEBUG',
+			'log',
+			$this->isType('array')
+		);
+		$this->client->expects($this->once())->method('notifyError')->with(
+			'test',
+			$this->stringContains('test'),
+			$this->callback(function ($callable) use($report) {
+				$callable($report);
+
+				return true;
+			})
+		);
+		$handler = new BugsnagHandler($this->client, Logger::ERROR, true, true, true);
+		$logger = new Logger('test', [$handler]);
+		$logger->debug('breadcrumb');
+		$logger->error('test', $context);
+	}
 }

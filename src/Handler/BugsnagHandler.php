@@ -26,16 +26,27 @@ class BugsnagHandler extends AbstractProcessingHandler
 		Logger::ALERT     => 'error',
 		Logger::EMERGENCY => 'error',
 	];
-
+	/** @var BugsnagClient */
 	protected $client;
+	/** @var bool */
 	private $includeContext;
+	/** @var bool */
+	private $addBreadCrumbs;
+	/** @var int */
+	private $realLevel;
 
 	public function __construct(
 		BugsnagClient $client,
 		int $level = Logger::ERROR,
 		bool $bubble = true,
-		bool $includeContext = false
+		bool $includeContext = false,
+		bool $addBreadCrumbs = false
 	) {
+		if ($addBreadCrumbs) {
+			$this->realLevel = $level;
+			$level = Logger::DEBUG;
+		}
+
 		parent::__construct($level, $bubble);
 		$this->client = $client;
 		$this->client->registerCallback(function (Report $report) {
@@ -60,6 +71,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 			}
 		});
 		$this->includeContext = $includeContext;
+		$this->addBreadCrumbs = $addBreadCrumbs;
 	}
 
 	/**
@@ -69,6 +81,23 @@ class BugsnagHandler extends AbstractProcessingHandler
 	{
 		if (isset($record['context'][self::IGNORE])) {
 			return;
+		}
+
+		if ($this->addBreadCrumbs && $record['level'] < $this->realLevel) {
+			$title = 'Log ' . Logger::getLevelName($record['level']);
+
+			if (isset($record['context']['exception'])) {
+				$title = get_class($record['context']['exception']);
+				$data = ['name' => $title, 'message' => $record['context']['exception']->getMessage()];
+				unset($record['context']['exception']);
+			}
+			else {
+				$data = ['message' => $record['message']];
+			}
+			$metaData = array_merge($data, $record['context']);
+			$this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
+
+			return ;
 		}
 
 		$severity = $this->getSeverity($record['level']);
