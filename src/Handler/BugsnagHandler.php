@@ -34,6 +34,8 @@ class BugsnagHandler extends AbstractProcessingHandler
 	private $addBreadCrumbs;
 	/** @var int */
 	private $realLevel;
+	/** @var array */
+	private $filter;
 
 	public function __construct(
 		BugsnagClient $client,
@@ -49,29 +51,17 @@ class BugsnagHandler extends AbstractProcessingHandler
 
 		parent::__construct($level, $bubble);
 		$this->client = $client;
-		$this->client->registerCallback(function (Report $report) {
-			$stacktrace = $report->getStacktrace();
-
-			// Monolog uses MonoSnag for logs, and bugsnag handler logs directly
-			$isAMonologHandledLog = $stacktrace->getFrames()[0]['method'] === static::class . '::write';
-
-			if (!$isAMonologHandledLog) {
-				// Do nothing
-				return;
-			}
-
-			// Remove The first frame
-			$stacktrace->removeFrame(0);
-
-			// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
-			while (strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
-					strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0
-			) {
-				$stacktrace->removeFrame(0);
-			}
-		});
+		$this->client->registerCallback([$this, 'cleanStacktrace']);
 		$this->includeContext = $includeContext;
 		$this->addBreadCrumbs = $addBreadCrumbs;
+	}
+
+	/**
+	 * @param array $filter Namespaces to ignore
+	 */
+	public function setFilter(array $filter): void
+	{
+		$this->filter = $filter;
 	}
 
 	/**
@@ -143,5 +133,47 @@ class BugsnagHandler extends AbstractProcessingHandler
 	private function getSeverity($errorCode): string
 	{
 		return self::SEVERITY_MAPPING[$errorCode] ?? self::SEVERITY_MAPPING[Logger::ERROR];
+	}
+
+	public function cleanStacktrace(Report $report): void
+	{
+		$stacktrace = $report->getStacktrace();
+
+		if ($this->filter) {
+			$frames = $stacktrace->getFrames();
+			foreach ($this->filter as $namespace) {
+				if (strpos($frames[0]['method'], $namespace) === 0) {
+					//if an error have happened in one of the filtered namespaces don't remove that information
+					break;
+				}
+				// This is a workaround for not being allowed to replace stacktrace in report
+				/** @noinspection CallableInLoopTerminationConditionInspection */
+				for ($i = 0; $i < count($frames); $i++) {
+					if (strpos($frames[$i]['method'], $namespace) === 0) {
+						$stacktrace->removeFrame($i);
+						$frames = $stacktrace->getFrames();
+						$i--;
+					}
+				}
+			}
+		}
+
+		// Monolog uses MonoSnag for logs, and bugsnag handler logs directly
+		$isAMonologHandledLog = $stacktrace->getFrames()['method'] === static::class . '::write';
+
+		if (!$isAMonologHandledLog) {
+			// Do nothing
+			return;
+		}
+
+		// Remove The first frame
+		$stacktrace->removeFrame(0);
+
+		// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
+		while (strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
+			strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0
+		) {
+			$stacktrace->removeFrame(0);
+		}
 	}
 }

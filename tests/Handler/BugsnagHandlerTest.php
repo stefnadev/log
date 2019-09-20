@@ -3,6 +3,7 @@
 namespace Stefna\Logger\Handler;
 
 use Bugsnag\Client;
+use Bugsnag\Configuration;
 use Bugsnag\Report;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
@@ -37,6 +38,48 @@ class BugsnagHandlerTest extends TestCase
 		$logger->error('test', [
 			'not_included' => true,
 		]);
+	}
+
+	public function testEmptyFilterNamespaces(): void
+	{
+		$report = Report::fromPHPThrowable(new Configuration(''), new \Exception('test'));
+
+		$handler = new BugsnagHandler($this->client);
+		$handler->setFilter([]);
+
+		$this->assertCount(10, $report->getStacktrace()->getFrames());
+
+		$handler->cleanStacktrace($report);
+
+		$this->assertCount(10, $report->getStacktrace()->getFrames());
+	}
+
+	public function testNoneExistingNamespaceFilter(): void
+	{
+		$report = Report::fromPHPThrowable(new Configuration(''), new \Exception('test'));
+
+		$handler = new BugsnagHandler($this->client);
+		$handler->setFilter(['Sunkan\\']);
+
+		$this->assertCount(10, $report->getStacktrace()->getFrames());
+
+		$handler->cleanStacktrace($report);
+
+		$this->assertCount(10, $report->getStacktrace()->getFrames());
+	}
+
+	public function testFilterNamespaces(): void
+	{
+		$report = Report::fromPHPThrowable(new Configuration(''), new \Exception('test'));
+
+		$handler = new BugsnagHandler($this->client);
+		$handler->setFilter(['PHPUnit\\']);
+
+		$this->assertCount(10, $report->getStacktrace()->getFrames());
+
+		$handler->cleanStacktrace($report);
+
+		$this->assertCount(2, $report->getStacktrace()->getFrames());
 	}
 
 	public function testIncludeContext(): void
