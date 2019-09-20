@@ -20,9 +20,16 @@ class BugsnagHandlerTest extends TestCase
 
 	public function testDefaultBehaviour(): void
 	{
+		$loggerChannel = 'testChannel';
 		$report = $this->createMock(Report::class);
 		$report->expects($this->once())->method('setSeverity')->with('error');
-		$report->expects($this->once())->method('setMetaData')->with([]);
+		$report
+			->expects($this->exactly(2))
+			->method('setMetaData')
+			->withConsecutive(
+				[['channel' => $loggerChannel], true],
+				[[], true]
+			);
 
 		$this->client->expects($this->once())->method('notifyError')->with(
 			'test',
@@ -34,7 +41,7 @@ class BugsnagHandlerTest extends TestCase
 			})
 		);
 		$handler = new BugsnagHandler($this->client);
-		$logger = new Logger('test', [$handler]);
+		$logger = new Logger($loggerChannel, [$handler]);
 		$logger->error('test', [
 			'not_included' => true,
 		]);
@@ -84,13 +91,21 @@ class BugsnagHandlerTest extends TestCase
 
 	public function testIncludeContext(): void
 	{
+		$loggerChannel = 'test-channel';
 		$context = [
 			'included' => true,
 		];
 
 		$report = $this->createMock(Report::class);
 		$report->expects($this->once())->method('setSeverity')->with('error');
-		$report->expects($this->exactly(2))->method('setMetaData')->withConsecutive([[], true], [$context, true]);
+		$report
+			->expects($this->exactly(3))
+			->method('setMetaData')
+			->withConsecutive(
+				[['channel' => $loggerChannel], true],
+				[[], true],
+				[$context, true]
+			);
 
 		$this->client->expects($this->once())->method('notifyError')->with(
 			'test',
@@ -102,7 +117,7 @@ class BugsnagHandlerTest extends TestCase
 			})
 		);
 		$handler = new BugsnagHandler($this->client, Logger::ERROR, true, true);
-		$logger = new Logger('test', [$handler]);
+		$logger = new Logger($loggerChannel, [$handler]);
 		$logger->error('test', $context);
 	}
 
@@ -119,13 +134,21 @@ class BugsnagHandlerTest extends TestCase
 
 	public function testAddBreadcrumb(): void
 	{
+		$loggerChannel = 'test-logger';
 		$context = [
 			'included' => true,
 		];
 
 		$report = $this->createMock(Report::class);
 		$report->expects($this->once())->method('setSeverity')->with('error');
-		$report->expects($this->exactly(2))->method('setMetaData')->withConsecutive([[], true], [$context, true]);
+		$report
+			->expects($this->exactly(3))
+			->method('setMetaData')
+			->withConsecutive(
+				[['channel' => $loggerChannel], true],
+				[[], true],
+				[$context, true]
+			);
 
 		$this->client->expects($this->once())->method('leaveBreadcrumb')->with(
 			'Log DEBUG',
@@ -142,7 +165,7 @@ class BugsnagHandlerTest extends TestCase
 			})
 		);
 		$handler = new BugsnagHandler($this->client, Logger::ERROR, true, true, true);
-		$logger = new Logger('test', [$handler]);
+		$logger = new Logger($loggerChannel, [$handler]);
 		$logger->debug('breadcrumb');
 		$logger->error('test', $context);
 	}

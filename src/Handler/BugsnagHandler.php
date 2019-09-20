@@ -91,35 +91,31 @@ class BugsnagHandler extends AbstractProcessingHandler
 		}
 
 		$severity = $this->getSeverity($record['level']);
+		$reportCallback = function (Report $report) use ($record, $severity) {
+			$report->setSeverity($severity);
+			if (isset($record['channel'])) {
+				$report->setMetaData(['channel' => $record['channel']]);
+			}
+			if (isset($record['extra'])) {
+				$report->setMetaData($record['extra']);
+			}
+			if ($this->includeContext && isset($record['context'])) {
+				unset($record['context']['exception']);
+				$report->setMetaData($record['context']);
+			}
+		};
+
 		if (isset($record['context']['exception'])) {
 			$this->client->notifyException(
 				$record['context']['exception'],
-				function (Report $report) use ($record, $severity) {
-					$report->setSeverity($severity);
-					if (isset($record['extra'])) {
-						$report->setMetaData($record['extra']);
-					}
-					if ($this->includeContext && isset($record['context'])) {
-						unset($record['context']['exception']);
-						$report->setMetaData($record['context']);
-					}
-				}
+				$reportCallback
 			);
 		}
 		else {
 			$this->client->notifyError(
 				(string) $record['message'],
 				(string) $record['formatted'],
-				function (Report $report) use ($record, $severity) {
-					$report->setSeverity($severity);
-					if (isset($record['extra'])) {
-						$report->setMetaData($record['extra']);
-					}
-					if ($this->includeContext && isset($record['context'])) {
-						unset($record['context']['exception']);
-						$report->setMetaData($record['context']);
-					}
-				}
+				$reportCallback
 			);
 		}
 	}
@@ -159,7 +155,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 		}
 
 		// Monolog uses MonoSnag for logs, and bugsnag handler logs directly
-		$isAMonologHandledLog = $stacktrace->getFrames()['method'] === static::class . '::write';
+		$isAMonologHandledLog = $stacktrace->getFrames()[0]['method'] === static::class . '::write';
 
 		if (!$isAMonologHandledLog) {
 			// Do nothing
