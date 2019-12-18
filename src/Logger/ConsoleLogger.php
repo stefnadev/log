@@ -5,6 +5,7 @@ namespace Stefna\Logger\Logger;
 use Psr\Log\AbstractLogger;
 use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 
@@ -96,5 +97,30 @@ class ConsoleLogger extends AbstractLogger
 		}
 
 		return $message . ': ' . json_encode($context, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+	}
+
+	public function setOutput(OutputInterface $output): void
+	{
+		$this->output = $output;
+	}
+
+	public function getOutput(): OutputInterface
+	{
+		return $this->output;
+	}
+
+	private $disabledOutput;
+	public function disableOutput(): void
+	{
+		if (!$this->disabledOutput) {
+			$this->disabledOutput = $this->output;
+			$this->output = new NullOutput();
+		}
+	}
+
+	public function restoreOutput(): void
+	{
+		$this->output = $this->disabledOutput;
+		$this->disabledOutput = null;
 	}
 }
