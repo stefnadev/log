@@ -8,18 +8,17 @@ final class CloudWatchFormatter extends JsonFormatter
 {
 	public function format(array $record)
 	{
-		if (isset($record["datetime"]) && ($record["datetime"] instanceof \DateTimeInterface)) {
-			$dateTime = $record['datetime'];
-			$record['datetime'] = $record['datetime']->format('c');
-		}
-		if (!isset($dateTime)) {
+		$dateTime = $record['datetime'];
+		if (!$dateTime instanceof \DateTimeInterface) {
+			// this should be impossible
 			$dateTime = new \DateTimeImmutable();
 		}
+		$record['datetime'] = $dateTime->format('Y-m-d\TH:i:s.up');
 		$line = parent::format($record);
 		if (isset($record['context']['requestId'])) {
 			$line = sprintf(
 				"%s\t%s\t%s\t%s",
-				$dateTime->format('Y-m-d\TH:i:s.v\Z'),
+				$dateTime->format('Y-m-d\TH:i:s.vp'),
 				$record['context']['requestId'],
 				$record['level_name'],
 				$line
