@@ -1,6 +1,7 @@
 {
     "name": "stefna/log",
     "type": "library",
+    "license": "MIT",
     "authors": [
         {
             "name": "Andreas Sundqvist",
