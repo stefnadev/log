@@ -1,4 +1,4 @@
-# Stefan Logger
+# Stefna Logger
 
 ## Stefna\Logger\Manager
 
