@@ -6,7 +6,7 @@ use Monolog\Formatter\JsonFormatter;
 
 final class CloudWatchFormatter extends JsonFormatter
 {
-	public function format(array $record)
+	public function format(array $record): string
 	{
 		$dateTime = $record['datetime'];
 		if (!$dateTime instanceof \DateTimeInterface) {
