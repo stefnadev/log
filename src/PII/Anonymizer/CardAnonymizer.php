@@ -26,6 +26,11 @@ final class CardAnonymizer implements Anonymizer
 			return null;
 		}
 
+		if (!is_scalar($value)) {
+			return $value;
+		}
+
+		$value = (string)$value;
 		if ($key === self::CARD_NUMBER) {
 			return substr($value, 0, 2) . '**-****-****-' . substr($value, -4);
 		}

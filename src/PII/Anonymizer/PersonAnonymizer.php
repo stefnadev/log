@@ -29,7 +29,11 @@ final class PersonAnonymizer implements Anonymizer
 			// remove value
 			return null;
 		}
+		if (!is_scalar($value)) {
+			return $value;
+		}
 
+		$value = (string)$value;
 		if ($key === self::EMAIL) {
 			$parts = explode('@', $value);
 			$domain = array_pop($parts);
@@ -41,6 +45,9 @@ final class PersonAnonymizer implements Anonymizer
 			return $newValue;
 		}
 		if ($key === self::PHONE) {
+			if (strlen($value) < 3) {
+				return '****';
+			}
 			return $value[0] . '****' . substr($value, -2);
 		}
 		if ($key === self::NAME) {
