@@ -40,4 +40,16 @@ final class PersonAnonymizerTest extends TestCase
 		$this->assertSame('A**** T****', $anonName);
 	}
 
+	public function testFieldAlias()
+	{
+		$anonymizer = new PersonAnonymizer();
+		$emailAlias = 'netfang';
+		$anonymizer->addAliasField(PersonAnonymizer::EMAIL, $emailAlias);
+		$ssnAlias = 'kennitala';
+		$anonymizer->addAliasField(PersonAnonymizer::SSN, $ssnAlias);
+
+		$this->assertNull($anonymizer->process($ssnAlias, '11111'));
+
+		$this->assertSame('x****@test.com', $anonymizer->process($emailAlias, 'xxxx@test.com'));
+	}
 }
