@@ -22,6 +22,11 @@ final class Processor
 		}
 	}
 
+	public function addAnonymizer(Anonymizer $anonymizer)
+	{
+		$this->anonymizers[] = $anonymizer;
+	}
+
 	public function __invoke(array $record)
 	{
 		$record['context'] = $this->processContext($record['context']);
