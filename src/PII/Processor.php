@@ -24,20 +24,32 @@ final class Processor
 
 	public function __invoke(array $record)
 	{
-		foreach ($record['context'] as $key => $value) {
+		$record['context'] = $this->processContext($record['context']);
+
+		return $record;
+	}
+
+	private function processContext(array $context): array
+	{
+		foreach ($context as $key => $value) {
+			if (is_array($value)) {
+				$context[$key] = $this->processContext($value);
+				continue;
+			}
+
 			foreach ($this->anonymizers as $anonymizer) {
 				if (!$anonymizer->support($key)) {
 					continue;
 				}
 				$value = $anonymizer->process($key, $value);
 				if ($value === null) {
-					unset($record['context'][$key]);
+					unset($context[$key]);
 					continue 2;
 				}
-				$record['context'][$key] = $value;
+				$context[$key] = $value;
 			}
-		}
 
-		return $record;
+		}
+		return $context;
 	}
 }

@@ -84,6 +84,34 @@ final class PiiProcessorTest extends TestCase
 		]);
 
 		$this->assertSame($expectedContext, $record['context']);
+	}
 
+	public function testNested()
+	{
+		$context = [
+			Fields::CARD_HOLDER => 'Test Testsson',
+			'account' => [
+				'password' => '123',
+				Fields::SSN => '1234567890',
+				Fields::NAME => 'Test Testsson',
+				Fields::EMAIL => 'test@example.com',
+			],
+			'type' => 'guest',
+		];
+		$expectedContext = [
+			Fields::CARD_HOLDER => 'T**** T****',
+			'account' => [
+				Fields::NAME => 'T**** T****',
+				Fields::EMAIL => 't****@example.com',
+			],
+			'type' => 'guest',
+		];
+
+		$processor = new Processor();
+		$record = $processor([
+			'context' => $context
+		]);
+
+		$this->assertSame($expectedContext, $record['context']);
 	}
 }
