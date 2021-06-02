@@ -9,6 +9,7 @@ class ActivateLevelFilter implements FilterInterface
 {
 	/** @var int */
 	private $activateLevel;
+	/** @var bool */
 	private $active = false;
 
 	public function __construct(string $activateLevel = LogLevel::ERROR)
@@ -16,6 +17,9 @@ class ActivateLevelFilter implements FilterInterface
 		$this->activateLevel = 7 - LogLevelTranslator::getLevelNo($activateLevel);
 	}
 
+	/**
+	 * @inheritdoc
+	 */
 	public function __invoke(string $level, string $message, array $context): bool
 	{
 		if (!$this->active) {

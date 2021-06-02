@@ -6,11 +6,15 @@ use Stefna\Logger\Handler\DatadogHandler;
 
 final class DatadogProcessor
 {
+	/**
+	 * @param array{context:array<string, mixed>, channel:?string, ddtags: string|array|null} $record
+	 * @return array{context:array<string, mixed>, channel:?string, ddtags: ?string}
+	 */
 	public function __invoke(array $record): array
 	{
 		$tags = [];
-		if (isset($record['context'][DatadogHandler::TAGS]) && !is_string($record['context'][DatadogHandler::TAGS])) {
-			foreach ($record[DatadogHandler::TAGS] as $key => $value) {
+		if (isset($record['context'][DatadogHandler::TAGS]) && !is_array($record['context'][DatadogHandler::TAGS])) {
+			foreach ($record['context'][DatadogHandler::TAGS] as $key => $value) {
 				$tags[] = (is_string($key) ? $key . ':' : '') . $value;
 			}
 			// remove from context to avoid duplicate data

@@ -7,6 +7,7 @@ use Monolog\Handler\AbstractHandler;
 use Psr\Log\LoggerInterface;
 use Stefna\Logger\Config\ConfigInterface;
 use Stefna\Logger\Filters\FilterFactory;
+use Stefna\Logger\Filters\FilterInterface;
 use Stefna\Logger\Filters\LogLevelRangeFilter;
 use Stefna\Logger\Logger\CallbackLogger;
 use Stefna\Logger\Logger\FilterLogger;
@@ -26,7 +27,7 @@ class Manager
 	private $monologHandlers = [];
 	/** @var callable[] */
 	private $monologProcessors = [];
-
+	/** @var FilterFactory */
 	private $filterFactory;
 
 	public function __construct(\Monolog\Logger $mainLogger, FilterFactory $filterFactory)
@@ -99,7 +100,9 @@ class Manager
 			if ($filterInstance instanceof LogLevelRangeFilter) {
 				$specialLogLevel = $filterInstance->getMinLevel();
 			}
-			$filters[] = $filterInstance;
+			if ($filterInstance instanceof FilterInterface) {
+				$filters[] = $filterInstance;
+			}
 		}
 
 		if ($specialLogLevel !== null || count($config->getHandlers()) || count($config->getProcessors())) {
@@ -110,7 +113,7 @@ class Manager
 					$handlers = $logger->getHandlers();
 					$mainHandler = end($handlers);
 					$mainKey = key($handlers);
-					if (method_exists($mainHandler, 'setLevel')) {
+					if ($mainHandler && method_exists($mainHandler, 'setLevel')) {
 						// We assume the first handler is the main handler and that's fine to clone and modify it
 						// We don't want to modify the original handler because we shouldn't change the log level for
 						// entire application

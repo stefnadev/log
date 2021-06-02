@@ -23,7 +23,7 @@ class ChannelWrapper extends AbstractLogger
 	 *
 	 * @param mixed $level
 	 * @param string $message
-	 * @param array $context
+	 * @param array<string, mixed> $context
 	 *
 	 * @return void
 	 */

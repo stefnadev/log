@@ -9,6 +9,10 @@ namespace Stefna\Logger\Processor;
  */
 class CallableContextProcessor
 {
+	/**
+	 * @param array{context:array<string, mixed>} $record
+	 * @return array{context:array<string, mixed>}
+	 */
 	public function __invoke(array $record)
 	{
 		foreach ($record['context'] as $key => &$value) {

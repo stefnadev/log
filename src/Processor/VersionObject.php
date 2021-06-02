@@ -4,16 +4,22 @@ namespace Stefna\Logger\Processor;
 
 class VersionObject
 {
+	/** @var string */
 	private $version;
+	/** @var string */
 	private $release;
+	/** @var string */
 	private $commit;
+	/** @var string */
 	private $environment;
 
-	public static function fromReleaseTool(array $versionData)
+	/**
+	 * @param array{release: string, commit: string, version: string} $versionData
+	 */
+	public static function fromReleaseTool(array $versionData): self
 	{
-		return new static($versionData['release'], $versionData['commit'], $versionData['version']);
+		return new self($versionData['release'], $versionData['commit'], $versionData['version']);
 	}
-
 
 	public function __construct(string $release, string $commit = '', string $version = '', string $environment = '')
 	{

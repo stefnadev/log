@@ -6,22 +6,20 @@ use Psr\Log\AbstractLogger;
 
 class BufferLogger extends AbstractLogger
 {
+	/** @var array<array-key, array{0: string, 1: string, 2: array<string, mixed>}> */
 	protected $buffer = [];
 
 	/**
-	 * Logs with an arbitrary level.
-	 *
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array $context
-	 *
-	 * @return void
+	 * @inheritdoc
 	 */
 	public function log($level, $message, array $context = []): void
 	{
 		$this->buffer[] = [$level, $message, $context];
 	}
 
+	/**
+	 * @return array<array-key, array{0: string, 1: string, 2: array<string, mixed>}>
+	 */
 	public function getBuffer(): array
 	{
 		return $this->buffer;

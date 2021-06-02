@@ -28,6 +28,11 @@ class NewRelic
 		}
 	}
 
+	/**
+	 * @param object|class-string $object
+	 * @param string[] $remove
+	 * @return string
+	 */
 	public static function cleanClassName($object, array $remove = [])
 	{
 		$className = \is_object($object) ? \get_class($object) : (string)$object;

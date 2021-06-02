@@ -12,7 +12,11 @@ class VersionProcessor
 		$this->version = $version;
 	}
 
-	public function __invoke($record)
+	/**
+	 * @param array{context:array<string, mixed>} $record
+	 * @return array{context:array<string, mixed>}
+	 */
+	public function __invoke($record): array
 	{
 		if ($this->version->getRelease()) {
 			$record['context']['release'] = $this->version->getRelease();
