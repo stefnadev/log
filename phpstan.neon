@@ -1,0 +1,10 @@
+parameters:
+	level: 8
+	paths:
+		- src/
+	ignoreErrors:
+		-
+			message: "#^Parameter \\#1 \\$metaData of method Bugsnag\\\\Report\\:\\:setMetaData\\(\\) expects array\\<array\\>, array\\<string, string\\> given\\.$#"
+			count: 1
+			path: src/Handler/BugsnagHandler.php
+
