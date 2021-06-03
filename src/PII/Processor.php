@@ -16,7 +16,6 @@ final class Processor
 	{
 		$this->anonymizers = $anonymizers;
 		if (!$this->anonymizers) {
-			$this->anonymizers[] = new PasswordAnonymizer();
 			$this->anonymizers[] = new CardAnonymizer();
 			$this->anonymizers[] = new PersonAnonymizer();
 		}

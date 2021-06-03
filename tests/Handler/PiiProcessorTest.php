@@ -91,7 +91,6 @@ final class PiiProcessorTest extends TestCase
 		$context = [
 			Fields::CARD_HOLDER => 'Test Testsson',
 			'account' => [
-				'password' => '123',
 				Fields::SSN => '1234567890',
 				Fields::NAME => 'Test Testsson',
 				Fields::EMAIL => 'test@example.com',
