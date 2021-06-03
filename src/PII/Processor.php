@@ -4,7 +4,6 @@ namespace Stefna\Logger\PII;
 
 use Stefna\Logger\PII\Anonymizer\Anonymizer;
 use Stefna\Logger\PII\Anonymizer\CardAnonymizer;
-use Stefna\Logger\PII\Anonymizer\PasswordAnonymizer;
 use Stefna\Logger\PII\Anonymizer\PersonAnonymizer;
 
 final class Processor
