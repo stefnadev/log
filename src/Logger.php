@@ -12,6 +12,7 @@ class Logger
 {
 	/** @var Manager */
 	private static $manager;
+	/** @var array<string, ConfigInterface> */
 	private static $config = [];
 
 	public static function setManager(Manager $manager): void
@@ -24,7 +25,7 @@ class Logger
 		self::$config[$channel] = $config;
 	}
 
-	public static function getChannelConfig(string $channel)
+	public static function getChannelConfig(string $channel): ConfigInterface
 	{
 		if (isset(self::$config[$channel])) {
 			return self::$config[$channel];
@@ -47,7 +48,7 @@ class Logger
 		}
 		return self::$manager;
 	}
-	
+
 	public static function getLogger(string $name): LoggerInterface
 	{
 		if (self::$manager === null) {

@@ -7,13 +7,7 @@ use Psr\Log\AbstractLogger;
 class SystemErrorLogger extends AbstractLogger
 {
 	/**
-	 * Logs with an arbitrary level.
-	 *
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array $context
-	 *
-	 * @return void
+	 * @inheritdoc
 	 */
 	public function log($level, $message, array $context = []): void
 	{

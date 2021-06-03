@@ -6,6 +6,7 @@ use Psr\Log\AbstractLogger;
 
 class CallbackLogger extends AbstractLogger
 {
+	/** @var callable */
 	private $logger;
 
 	public function __construct(callable $logger)

@@ -4,7 +4,6 @@ namespace Stefna\Logger\Handler;
 
 use Monolog\Formatter\JsonFormatter;
 use Monolog\Handler\AbstractHandler;
-use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 
 final class DatadogHandler extends AbstractHandler
@@ -46,7 +45,8 @@ final class DatadogHandler extends AbstractHandler
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
+	 * @param array{context: array<string, mixed>, level: int} $record
 	 */
 	public function handle(array $record)
 	{
@@ -74,8 +74,8 @@ final class DatadogHandler extends AbstractHandler
 	/**
 	 * Processes a record.
 	 *
-	 * @param  array $record
-	 * @return array
+	 * @param  array<string, mixed> $record
+	 * @return array<string, mixed>
 	 */
 	private function processRecord(array $record): array
 	{
@@ -88,6 +88,9 @@ final class DatadogHandler extends AbstractHandler
 		return $record;
 	}
 
+	/**
+	 * @param mixed[] $messages
+	 */
 	private function sendMessages(array $messages): void
 	{
 		$url = $this->apiEndpoint . '/v1/input';

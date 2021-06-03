@@ -6,7 +6,9 @@ use Psr\SimpleCache\CacheInterface;
 
 class TimeLimitFilter implements FilterInterface
 {
+	/** @var CacheInterface */
 	private $cache;
+	/** @var \DateInterval */
 	private $interval;
 
 	public function __construct(CacheInterface $cache, \DateInterval $interval)
@@ -15,6 +17,9 @@ class TimeLimitFilter implements FilterInterface
 		$this->interval = $interval;
 	}
 
+	/**
+	 * @param array<string, mixed> $context
+	 */
 	public function __invoke(string $level, string $message, array $context): bool
 	{
 		$key = md5(serialize([$level, $message, $context]));

@@ -4,6 +4,7 @@ namespace Stefna\Logger\Filters;
 
 class FilterFactory
 {
+	/** @var array<string, array{0: class-string, 1: string[]}> */
 	private static $map = [
 		'callback' => [CallbackFilter::class, ['callback']],
 		'exclude' => [ExcludeLogLevelFilter::class, ['level']],
@@ -13,6 +14,9 @@ class FilterFactory
 		'time-limit' => [TimeLimitFilter::class, ['cache', 'interval']],
 	];
 
+	/**
+	 * @param array{0: string, 1: array<string, mixed>} $filterConfig
+	 */
 	public function createFilter(array $filterConfig): ?FilterInterface
 	{
 		[$filterName, $filterArgs] = $filterConfig;

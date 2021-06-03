@@ -6,9 +6,16 @@ use Monolog\Formatter\JsonFormatter;
 
 final class CloudWatchFormatter extends JsonFormatter
 {
+	/**
+	 * @param array{
+	 * 		datetime?: \DateTimeInterface|null,
+	 * 		level_name: string,
+	 * 		context: array{requestId?: string}
+	 * } $record
+	 */
 	public function format(array $record): string
 	{
-		$dateTime = $record['datetime'];
+		$dateTime = $record['datetime'] ?? null;
 		if (!$dateTime instanceof \DateTimeInterface) {
 			// this should be impossible
 			$dateTime = new \DateTimeImmutable();

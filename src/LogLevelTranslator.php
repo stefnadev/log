@@ -7,7 +7,7 @@ use Stefna\Logger\Exceptions\LogLevelNotFoundException;
 
 final class LogLevelTranslator
 {
-	/** @var array */
+	/** @var array<int, string> */
 	private static $levelsA = [
 		Rfc5424LogLevels::EMERGENCY => LogLevel::EMERGENCY,
 		Rfc5424LogLevels::ALERT => LogLevel::ALERT,
@@ -18,7 +18,7 @@ final class LogLevelTranslator
 		Rfc5424LogLevels::INFO => LogLevel::INFO,
 		Rfc5424LogLevels::DEBUG => LogLevel::DEBUG,
 	];
-	/** @var array */
+	/** @var array<string, int> */
 	private static $levelsB = [
 		LogLevel::EMERGENCY => Rfc5424LogLevels::EMERGENCY,
 		LogLevel::ALERT => Rfc5424LogLevels::ALERT,
@@ -30,11 +30,17 @@ final class LogLevelTranslator
 		LogLevel::DEBUG => Rfc5424LogLevels::DEBUG,
 	];
 
+	/**
+	 * @return array<string, int>
+	 */
 	public static function getRfc5424Levels(): array
 	{
 		return self::$levelsB;
 	}
 
+	/**
+	 * @return array<int, string>
+	 */
 	public static function getLevelTokens(): array
 	{
 		return self::$levelsA;
@@ -61,7 +67,7 @@ final class LogLevelTranslator
 	}
 
 	/**
-	 * @param array $levels
+	 * @param array<string|int, string|int> $levels
 	 * @param string|int $level
 	 * @return string|int
 	 * @throws LogLevelNotFoundException

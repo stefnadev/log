@@ -14,7 +14,9 @@ class ConsoleLogger extends AbstractLogger
 	public const INFO = 'info';
 	public const ERROR = 'error';
 
+	/** @var OutputInterface */
 	private $output;
+	/** @var array<string, int> */
 	private $verbosityLevelMap = [
 		LogLevel::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
 		LogLevel::ALERT => OutputInterface::VERBOSITY_NORMAL,
@@ -25,6 +27,7 @@ class ConsoleLogger extends AbstractLogger
 		LogLevel::INFO => OutputInterface::VERBOSITY_VERY_VERBOSE,
 		LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
 	];
+	/** @var array<string, string> */
 	private $formatLevelMap = [
 		LogLevel::EMERGENCY => self::ERROR,
 		LogLevel::ALERT => self::ERROR,
@@ -35,8 +38,15 @@ class ConsoleLogger extends AbstractLogger
 		LogLevel::INFO => self::INFO,
 		LogLevel::DEBUG => self::INFO,
 	];
+	/** @var bool */
 	private $errored = false;
+	/** @var OutputInterface|null */
+	private $disabledOutput;
 
+	/**
+	 * @param array<string, int> $verbosityLevelMap
+	 * @param array<string, string> $formatLevelMap
+	 */
 	public function __construct(OutputInterface $output, array $verbosityLevelMap = [], array $formatLevelMap = [])
 	{
 		$this->output = $output;
@@ -88,6 +98,7 @@ class ConsoleLogger extends AbstractLogger
 	/**
 	 * Interpolates context values into the message placeholders.
 	 *
+	 * @param array<string, mixed> $context
 	 * @author PHP Framework Interoperability Group
 	 */
 	private function interpolate(string $message, array $context): string
@@ -109,7 +120,6 @@ class ConsoleLogger extends AbstractLogger
 		return $this->output;
 	}
 
-	private $disabledOutput;
 	public function disableOutput(): void
 	{
 		if (!$this->disabledOutput) {
@@ -120,7 +130,9 @@ class ConsoleLogger extends AbstractLogger
 
 	public function restoreOutput(): void
 	{
-		$this->output = $this->disabledOutput;
+		if ($this->disabledOutput) {
+			$this->output = $this->disabledOutput;
+		}
 		$this->disabledOutput = null;
 	}
 }

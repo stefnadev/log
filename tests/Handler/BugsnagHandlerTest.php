@@ -54,11 +54,11 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter([]);
 
-		$this->assertCount(10, $report->getStacktrace()->getFrames());
+		$this->assertCount(11, $report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount(10, $report->getStacktrace()->getFrames());
+		$this->assertCount(11, $report->getStacktrace()->getFrames());
 	}
 
 	public function testNoneExistingNamespaceFilter(): void
@@ -68,11 +68,11 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter(['Sunkan\\']);
 
-		$this->assertCount(10, $report->getStacktrace()->getFrames());
+		$this->assertCount(11, $report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount(10, $report->getStacktrace()->getFrames());
+		$this->assertCount(11, $report->getStacktrace()->getFrames());
 	}
 
 	public function testFilterNamespaces(): void
@@ -82,7 +82,7 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter(['PHPUnit\\']);
 
-		$this->assertCount(10, $report->getStacktrace()->getFrames());
+		$this->assertCount(11, $report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 

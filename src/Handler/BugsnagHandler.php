@@ -34,7 +34,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 	private $addBreadCrumbs;
 	/** @var int */
 	private $realLevel;
-	/** @var array */
+	/** @var array<array-key, string> */
 	private $filter;
 
 	public function __construct(
@@ -57,7 +57,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 	}
 
 	/**
-	 * @param array $filter Namespaces to ignore
+	 * @param array<array-key, string> $filter Namespaces to ignore
 	 */
 	public function setFilter(array $filter): void
 	{
@@ -66,6 +66,14 @@ class BugsnagHandler extends AbstractProcessingHandler
 
 	/**
 	 * @inheritdoc
+	 * @param array{
+	 * 		context: array<string, mixed>,
+	 * 		level: int,
+	 * 		channel?: string,
+	 * 		extra?: mixed[],
+	 * 		message: string,
+	 * 		formatted: string
+	 * } $record
 	 */
 	protected function write(array $record): void
 	{
