@@ -6,5 +6,9 @@ interface Anonymizer
 {
 	public function support(string $key): bool;
 
+	/**
+	 * @param mixed $value
+	 * @return mixed
+	 */
 	public function process(string $key, $value);
 }

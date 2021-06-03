@@ -12,9 +12,10 @@ final class PersonAnonymizer implements Anonymizer
 	public const SSN = '_ssn';
 	public const DOB = '_date_of_birth';
 
+	/** @var array<string, string> */
 	private $aliasFields = [];
 
-	public function addAliasField(string $field, string $alias)
+	public function addAliasField(string $field, string $alias): void
 	{
 		$this->aliasFields[$alias] = $field;
 	}
@@ -30,7 +31,10 @@ final class PersonAnonymizer implements Anonymizer
 		], true) || array_key_exists($key, $this->aliasFields);
 	}
 
-	public function process(string $key, $value)
+	/**
+	 * @param mixed $value
+	 */
+	public function process(string $key, $value): ?string
 	{
 		if (array_key_exists($key, $this->aliasFields)) {
 			$key = $this->aliasFields[$key];

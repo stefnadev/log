@@ -21,18 +21,26 @@ final class Processor
 		}
 	}
 
-	public function addAnonymizer(Anonymizer $anonymizer)
+	public function addAnonymizer(Anonymizer $anonymizer): void
 	{
 		$this->anonymizers[] = $anonymizer;
 	}
 
-	public function __invoke(array $record)
+	/**
+	 * @param array{context: array<string, mixed>} $record
+	 * @return array{context: array<string, mixed>}
+	 */
+	public function __invoke(array $record): array
 	{
 		$record['context'] = $this->processContext($record['context']);
 
 		return $record;
 	}
 
+	/**
+	 * @param array<string, mixed> $context
+	 * @return array<string, mixed>
+	 */
 	private function processContext(array $context): array
 	{
 		foreach ($context as $key => $value) {
@@ -52,7 +60,6 @@ final class Processor
 				}
 				$context[$key] = $value;
 			}
-
 		}
 		return $context;
 	}

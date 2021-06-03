@@ -19,7 +19,10 @@ final class CardAnonymizer implements Anonymizer
 		]);
 	}
 
-	public function process(string $key, $value)
+	/**
+	 * @param mixed $value
+	 */
+	public function process(string $key, $value): ?string
 	{
 		if ($key === self::CARD_CCV) {
 			// remove value
