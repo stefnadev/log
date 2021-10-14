@@ -10,12 +10,12 @@ use Stefna\Logger\Exceptions\ManagerNotDefined;
 
 class Logger
 {
-	/** @var Manager */
+	/** @var ManagerInterface */
 	private static $manager;
 	/** @var array<string, ConfigInterface> */
 	private static $config = [];
 
-	public static function setManager(Manager $manager): void
+	public static function setManager(ManagerInterface $manager): void
 	{
 		self::$manager = $manager;
 	}
@@ -41,7 +41,7 @@ class Logger
 		}
 	}
 
-	public static function getManager(): Manager
+	public static function getManager(): ManagerInterface
 	{
 		if (self::$manager === null) {
 			throw new ManagerNotDefined();
@@ -56,6 +56,6 @@ class Logger
 			return new NullLogger();
 		}
 
-		return self::$manager->getLogger($name, self::$config[$name]??null);
+		return self::$manager->getLogger($name, self::$config[$name] ?? null);
 	}
 }
