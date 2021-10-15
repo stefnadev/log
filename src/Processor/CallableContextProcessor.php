@@ -10,11 +10,22 @@ namespace Stefna\Logger\Processor;
 class CallableContextProcessor
 {
 	/**
+	 * Can be used in context to allow a callback to be executed if the log entry is used
+	 */
+	public const CALLBACK = '_callback-processor';
+
+	/**
 	 * @param array{context:array<string, mixed>} $record
 	 * @return array{context:array<string, mixed>}
 	 */
 	public function __invoke(array $record)
 	{
+		if (isset($record['context'][self::CALLBACK])) {
+			$callback = $record['context'][self::CALLBACK];
+			$callback($record);
+			unset($record['context'][self::CALLBACK]);
+		}
+
 		foreach ($record['context'] as $key => &$value) {
 			if (\is_callable($value)) {
 				try {
