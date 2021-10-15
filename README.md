@@ -1,6 +1,6 @@
 # Stefna Logger
 
-## Stefna\Logger\Manager
+## Stefna\Logger\ManagerInterface
 
 Class that handles creation of logger classes.
 
@@ -12,10 +12,16 @@ This is where you configure your main logger.
     If channel is set the process will only be applied to that channel.
     If no instance of channel exists the process will be silently ignored
 
+## Stefna\Logger\MonologManager
+
+Manager that uses Monolog as the main logger.
+
+It has one extra method on the manager and that's `pushHandler` that is so that you can configure custom handlers
+for select channels
+
 * `pushHandler(HandlerInterface $handler, $channel = null): Manager` 
     If channel is set the handler will only be applied to that channel.
     If no instance of channel exists the process will be silently ignored
-
 
 ## Stefna\Logger\Logger Methods
 
@@ -48,7 +54,7 @@ This method will create the logger if it don't exists and it check for configs f
 <?php declare(strict_types=1);
 
 $monolog = new \Monolog\Logger('main-channel', $handlers, $proccess);
-$manager = new \Stefna\Logger\Manager($monolog, new \Stefna\Logger\Filters\FilterFactory());
+$manager = new \Stefna\Logger\MonologManager($monolog, new \Stefna\Logger\Filters\FilterFactory());
 
 \Stefna\Logger\Logger::setManager($manager);
 
@@ -88,11 +94,11 @@ $crashLogger = new BufferFilterLogger(
     new ActivateLevelFilter(LogLevel::ERROR)
 );
 
-//will not add to log file
-$crashLogger->debug('tset');
+// Will not add to log file
+$crashLogger->debug('test');
 
-// will add all message prior and after to this to the log
-// so we get a complete story of what happend during the execution
+// Will add all message prior and after this to the log
+// This is so that we get a complete story of what happened during the execution
 $crashLogger->error('error');
 
 ```
