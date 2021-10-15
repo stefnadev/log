@@ -11,6 +11,8 @@ interface ManagerInterface
 	 * Return main logger class
 	 *
 	 * We don't enforce return type because it can be different based implementation
+	 *
+	 * @return mixed&LoggerInterface
 	 */
 	public function getMainLogger();
 

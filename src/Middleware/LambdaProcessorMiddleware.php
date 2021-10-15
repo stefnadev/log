@@ -16,10 +16,12 @@ final class LambdaProcessorMiddleware implements MiddlewareInterface
 		$context = $request->getAttribute(LambdaContextMiddleware::LAMBDA_CONTEXT);
 		$mainLogger = Logger::getManager()->getMainLogger();
 		if ($context instanceof Context) {
-			$mainLogger->pushProcessor(static function ($record) use ($context) {
-				$record['context']['requestId'] = $context->getAwsRequestId();
-				return $record;
-			});
+			if ($mainLogger instanceof \Monolog\Logger) {
+				$mainLogger->pushProcessor(static function ($record) use ($context) {
+					$record['context']['requestId'] = $context->getAwsRequestId();
+					return $record;
+				});
+			}
 		}
 		else {
 			$mainLogger->warning('No lambda context found!');

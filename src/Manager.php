@@ -6,4 +6,5 @@ namespace Stefna\Logger;
  * @deprecated
  */
 class Manager extends MonologManager
-{}
+{
+}
