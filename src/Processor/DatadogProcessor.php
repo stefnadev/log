@@ -22,7 +22,7 @@ final class DatadogProcessor
 		}
 
 		if (isset($record['channel']) || isset($record['context']['channel'])) {
-			$tags[] = 'channel:' . $record['channel'] ?: $record['context']['channel'] ?: 'unknown';
+			$tags[] = 'channel:' . ($record['channel'] ?: $record['context']['channel'] ?: 'unknown');
 		}
 
 		// needs to be at top level for datadog to handle them
