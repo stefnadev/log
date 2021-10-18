@@ -24,6 +24,10 @@ class DebounceFilter implements FilterInterface
 			return true;
 		}
 
+		if (!$context[self::DEBOUNCE_INTERVAL] instanceof \DateInterval) {
+			$context[self::DEBOUNCE_INTERVAL] = new \DateInterval($context[self::DEBOUNCE_INTERVAL]);
+		}
+
 		$callback = $this->debounceCallback;
 		return (bool)$callback($level, $message, $context);
 	}
