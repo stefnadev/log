@@ -102,3 +102,33 @@ $crashLogger->debug('test');
 $crashLogger->error('error');
 
 ```
+
+## Setup debouncer filter
+
+This filter is meant to be used to prevent logs from being filed with the same errors
+
+### Setup
+
+```php
+<?php declare(strict_types=1);
+
+use Stefna\Logger\Filters\DebounceFilter;
+use Stefna\Logger\Logger\FilterLogger
+
+$debounceFilter = new DebounceFilter(function($level, $message, $context) use ($cache) {
+	// create cache key
+	$key = md5(serialize([$message, $context]));
+	if ($cache->has($key)) {
+		return false;
+	}
+	$debounceInterval = $context[DebounceFilter::DEBOUNCE_INTERVAL];
+	$cache->set($key, true, new DateInterval($debounceInterval));
+	return true;
+});
+
+$logger = new FilterLogger($mainLogger, $debounceFilter);
+$logger->alert('Db connect error', [
+	DebounceFilter::DEBOUNCE_INTERVAL => 'PT1H', // only log once an hour
+]);
+```
+
