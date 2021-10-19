@@ -4,6 +4,8 @@ namespace Stefna\Logger\Filters;
 
 class ExcludeLogLevelFilter implements FilterInterface
 {
+	public const KEY = 'exclude';
+
 	/** @var string[] */
 	private $excludedLogLevel;
 

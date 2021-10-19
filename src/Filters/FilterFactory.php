@@ -6,12 +6,12 @@ class FilterFactory
 {
 	/** @var array<string, array{0: class-string, 1: string[]}> */
 	private static $map = [
-		'callback' => [CallbackFilter::class, ['callback']],
-		'exclude' => [ExcludeLogLevelFilter::class, ['level']],
-		'max-level' => [MaxLogLevelFilter::class, ['level']],
-		'min-level' => [MinLogLevelFilter::class, ['level']],
-		'log-level' => [LogLevelRangeFilter::class, ['min', 'max']],
-		'time-limit' => [TimeLimitFilter::class, ['cache', 'interval']],
+		CallbackFilter::KEY => [CallbackFilter::class, ['callback']],
+		ExcludeLogLevelFilter::KEY => [ExcludeLogLevelFilter::class, ['level']],
+		MaxLogLevelFilter::KEY => [MaxLogLevelFilter::class, ['level']],
+		MinLogLevelFilter::KEY => [MinLogLevelFilter::class, ['level']],
+		LogLevelRangeFilter::KEY => [LogLevelRangeFilter::class, ['min', 'max']],
+		TimeLimitFilter::KEY => [TimeLimitFilter::class, ['cache', 'interval']],
 	];
 
 	/**

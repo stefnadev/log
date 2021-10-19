@@ -4,6 +4,8 @@ namespace Stefna\Logger\Filters;
 
 class CallbackFilter implements FilterInterface
 {
+	public const KEY = 'callback';
+
 	/** @var callable */
 	private $callback;
 

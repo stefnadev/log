@@ -53,22 +53,26 @@ This method will create the logger if it don't exists and it check for configs f
 ```php
 <?php declare(strict_types=1);
 
+use Stefna\Logger\Filters\MinLogLevelFilter;
+use Stefna\Logger\Filters\CallbackFilter;
+use Stefna\Logger\Filters\TimeLimitFilter;
+
 $monolog = new \Monolog\Logger('main-channel', $handlers, $proccess);
 $manager = new \Stefna\Logger\MonologManager($monolog, new \Stefna\Logger\Filters\FilterFactory());
 
 \Stefna\Logger\Logger::setManager($manager);
 
 $filters = [
-	['min-level', ['level' => \Psr\Log\LogLevel::ALERT]],
+	[MinLogLevelFilter::KEY, ['level' => \Psr\Log\LogLevel::ALERT]],
 	[
-		'callback',
+		CallbackFilter::KEY,
 		[
 			'callback' => function(string $level, string $message, array $context) {
 				return isset($context['exception']);
 			},
 		],
 	],
-	['time-limit', ['cache' => $simpleCache, 'interval' => new DateInterval('P1D')]]
+	[TimeLimitFilter::KEY, ['cache' => $simpleCache, 'interval' => new DateInterval('P1D')]]
 ];
 
 \Stefna\Logger\Logger::setChannelConfig(

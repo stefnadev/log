@@ -6,6 +6,8 @@ use Psr\Log\LogLevel;
 
 class MinLogLevelFilter extends LogLevelRangeFilter
 {
+	public const KEY = 'min-level';
+
 	public function __construct(string $minLevel = LogLevel::EMERGENCY)
 	{
 		parent::__construct($minLevel);

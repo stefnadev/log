@@ -7,6 +7,8 @@ use Stefna\Logger\LogLevelTranslator;
 
 class LogLevelRangeFilter implements FilterInterface
 {
+	public const KEY = 'log-level';
+
 	/** @var int */
 	private $minLevel;
 	/** @var int */

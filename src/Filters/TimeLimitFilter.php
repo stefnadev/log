@@ -6,6 +6,8 @@ use Psr\SimpleCache\CacheInterface;
 
 class TimeLimitFilter implements FilterInterface
 {
+	public const KEY = 'time-limit';
+
 	/** @var CacheInterface */
 	private $cache;
 	/** @var \DateInterval */

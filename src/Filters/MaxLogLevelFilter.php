@@ -6,6 +6,8 @@ use Psr\Log\LogLevel;
 
 class MaxLogLevelFilter extends LogLevelRangeFilter
 {
+	public const KEY = 'max-level';
+
 	public function __construct(string $maxLevel = LogLevel::EMERGENCY)
 	{
 		parent::__construct(LogLevel::DEBUG, $maxLevel);
