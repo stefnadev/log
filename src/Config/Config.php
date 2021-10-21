@@ -3,12 +3,13 @@
 namespace Stefna\Logger\Config;
 
 use Monolog\Handler\HandlerInterface;
+use Stefna\Logger\Filters\FilterInterface;
 
 class Config implements ConfigInterface
 {
 	/** @var string */
 	private $name;
-	/** @var array<array-key, array{0: string, 1: array<string, mixed>}> */
+	/** @var array<array-key, FilterInterface|array{0: string, 1: array<string, mixed>}> */
 	private $filters = [];
 	/** @var array<array-key, callable> */
 	private $processors = [];
@@ -16,7 +17,7 @@ class Config implements ConfigInterface
 	private $handlers = [];
 
 	/**
-	 * @param array<array-key, array{0: string, 1: array<string, mixed>}> $filters
+	 * @param array<array-key, FilterInterface|array{0: string, 1: array<string, mixed>}> $filters
 	 * @param array<array-key, callable> $processors
 	 * @param array<array-key, HandlerInterface> $handlers
 	 */

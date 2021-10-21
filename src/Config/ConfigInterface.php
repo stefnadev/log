@@ -20,7 +20,7 @@ interface ConfigInterface
 	public function getName(): string;
 
 	/**
-	 * @return array<array-key, array{0: string, 1: array<string, mixed>}>
+	 * @return array<array-key, FilterInterface|array{0: string, 1: array<string, mixed>}>
 	 */
 	public function getFilters(): array;
 }

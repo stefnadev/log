@@ -80,6 +80,10 @@ class MonologManager extends AbstractManager
 		$specialLogLevel = null;
 		$filters = [];
 		foreach ($config->getFilters() as $filter) {
+			if ($filter instanceof FilterInterface) {
+				$filters[] = $filter;
+				continue;
+			}
 			$filterInstance = $this->filterFactory->createFilter($filter);
 			if ($filterInstance instanceof LogLevelRangeFilter) {
 				$specialLogLevel = $filterInstance->getMinLevel();
