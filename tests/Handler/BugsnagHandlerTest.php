@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class BugsnagHandlerTest extends TestCase
 {
-	/** @var Client|\PHPUnit\Framework\MockObject\MockObject */
+	/** @var Client&\PHPUnit\Framework\MockObject\MockObject */
 	private $client;
 
 	protected function setUp(): void
@@ -54,11 +54,11 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter([]);
 
-		$this->assertCount(11, $report->getStacktrace()->getFrames());
+		$frameCount = count($report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount(11, $report->getStacktrace()->getFrames());
+		$this->assertCount($frameCount, $report->getStacktrace()->getFrames());
 	}
 
 	public function testNoneExistingNamespaceFilter(): void
@@ -68,11 +68,11 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter(['Sunkan\\']);
 
-		$this->assertCount(11, $report->getStacktrace()->getFrames());
+		$frameCount = count($report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount(11, $report->getStacktrace()->getFrames());
+		$this->assertCount($frameCount, $report->getStacktrace()->getFrames());
 	}
 
 	public function testFilterNamespaces(): void
@@ -82,11 +82,11 @@ class BugsnagHandlerTest extends TestCase
 		$handler = new BugsnagHandler($this->client);
 		$handler->setFilter(['PHPUnit\\']);
 
-		$this->assertCount(11, $report->getStacktrace()->getFrames());
+		$frameCount = count($report->getStacktrace()->getFrames());
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount(2, $report->getStacktrace()->getFrames());
+		$this->assertCount($frameCount - 9, $report->getStacktrace()->getFrames());
 	}
 
 	public function testIncludeContext(): void
