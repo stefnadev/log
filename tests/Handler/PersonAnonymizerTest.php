@@ -48,7 +48,7 @@ final class PersonAnonymizerTest extends TestCase
 		$ssnAlias = 'kennitala';
 		$anonymizer->addAliasField(PersonAnonymizer::SSN, $ssnAlias);
 
-		$this->assertNull($anonymizer->process($ssnAlias, '11111'));
+		$this->assertSame('**********', $anonymizer->process($ssnAlias, '11111'));
 
 		$this->assertSame('x****@test.com', $anonymizer->process($emailAlias, 'xxxx@test.com'));
 	}

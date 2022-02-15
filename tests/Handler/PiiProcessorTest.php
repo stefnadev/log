@@ -44,6 +44,7 @@ final class PiiProcessorTest extends TestCase
 		];
 		$expectedContext = [
 			Fields::NAME => 'T**** T****',
+			Fields::SSN => '**********',
 			Fields::EMAIL => 't****@example.com',
 			Fields::PHONE => '1****14',
 			'account' => 123,
@@ -72,6 +73,7 @@ final class PiiProcessorTest extends TestCase
 		$expectedContext = [
 			Fields::CARD_HOLDER => 'T**** T****',
 			Fields::CARD_NUMBER => '12**-****-****-4563',
+			Fields::SSN => '**********',
 			Fields::EMAIL => 't****@example.com',
 			Fields::PHONE => '1****14',
 			'account' => 123,
@@ -100,6 +102,7 @@ final class PiiProcessorTest extends TestCase
 		$expectedContext = [
 			Fields::CARD_HOLDER => 'T**** T****',
 			'account' => [
+				Fields::SSN => '**********',
 				Fields::NAME => 'T**** T****',
 				Fields::EMAIL => 't****@example.com',
 			],
@@ -136,6 +139,7 @@ final class PiiProcessorTest extends TestCase
 			Fields::CARD_HOLDER => 'T**** T****',
 			'accounts' => [
 				[
+					Fields::SSN => '**********',
 					Fields::NAME => 'T**** T****',
 					Fields::EMAIL => 't****@example.com',
 				],

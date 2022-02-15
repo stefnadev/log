@@ -40,10 +40,15 @@ final class PersonAnonymizer implements Anonymizer
 			$key = $this->aliasFields[$key];
 		}
 
-		if (in_array($key, [self::SSN, self::DOB], true)) {
+		if (in_array($key, [self::DOB], true)) {
 			// remove value
 			return null;
 		}
+
+		if ($key === self::SSN) {
+			return '**********';
+		}
+
 		if (!is_scalar($value)) {
 			return $value;
 		}
