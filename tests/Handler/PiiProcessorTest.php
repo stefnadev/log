@@ -113,4 +113,46 @@ final class PiiProcessorTest extends TestCase
 
 		$this->assertSame($expectedContext, $record['context']);
 	}
+
+	public function testWithArrayList()
+	{
+		$context = [
+			Fields::CARD_HOLDER => 'Test Testsson',
+			'accounts' => [
+				[
+					Fields::SSN => '1234567890',
+					Fields::NAME => 'Test Testsson',
+					Fields::EMAIL => 'test@example.com',
+				]
+			],
+			'list' => [
+				'1',
+				'2',
+				'3',
+			],
+			'type' => 'guest',
+		];
+		$expectedContext = [
+			Fields::CARD_HOLDER => 'T**** T****',
+			'accounts' => [
+				[
+					Fields::NAME => 'T**** T****',
+					Fields::EMAIL => 't****@example.com',
+				],
+			],
+			'list' => [
+				'1',
+				'2',
+				'3',
+			],
+			'type' => 'guest',
+		];
+
+		$processor = new Processor();
+		$record = $processor([
+			'context' => $context
+		]);
+
+		$this->assertSame($expectedContext, $record['context']);
+	}
 }

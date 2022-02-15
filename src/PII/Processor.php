@@ -47,7 +47,10 @@ final class Processor
 				$context[$key] = $this->processContext($value);
 				continue;
 			}
-
+			if (!is_string($key)) {
+				// skip lists and invalid key types
+				continue;
+			}
 			foreach ($this->anonymizers as $anonymizer) {
 				if (!$anonymizer->support($key)) {
 					continue;
