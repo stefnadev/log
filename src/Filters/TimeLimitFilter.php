@@ -8,16 +8,10 @@ class TimeLimitFilter implements FilterInterface
 {
 	public const KEY = 'time-limit';
 
-	/** @var CacheInterface */
-	private $cache;
-	/** @var \DateInterval */
-	private $interval;
-
-	public function __construct(CacheInterface $cache, \DateInterval $interval)
-	{
-		$this->cache = $cache;
-		$this->interval = $interval;
-	}
+	public function __construct(
+		private readonly CacheInterface $cache,
+		private readonly \DateInterval $interval
+	) {}
 
 	/**
 	 * @param array<string, mixed> $context

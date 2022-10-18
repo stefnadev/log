@@ -7,7 +7,7 @@ class ExcludeLogLevelFilter implements FilterInterface
 	public const KEY = 'exclude';
 
 	/** @var string[] */
-	private $excludedLogLevel;
+	private array $excludedLogLevel;
 
 	public function __construct(string ...$excludedLogLevel)
 	{

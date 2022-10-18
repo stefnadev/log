@@ -9,10 +9,8 @@ class LogLevelRangeFilter implements FilterInterface
 {
 	public const KEY = 'log-level';
 
-	/** @var int */
-	private $minLevel;
-	/** @var int */
-	private $maxLevel;
+	private int $minLevel;
+	private int $maxLevel;
 
 	public function __construct(
 		string $minLevel = LogLevel::DEBUG,

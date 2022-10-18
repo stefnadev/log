@@ -7,10 +7,8 @@ use Stefna\Logger\LogLevelTranslator;
 
 class ActivateLevelFilter implements FilterInterface
 {
-	/** @var int */
-	private $activateLevel;
-	/** @var bool */
-	private $active = false;
+	private int $activateLevel;
+	private bool $active = false;
 
 	public function __construct(string $activateLevel = LogLevel::ERROR)
 	{
