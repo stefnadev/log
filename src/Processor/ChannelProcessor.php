@@ -2,18 +2,24 @@
 
 namespace Stefna\Logger\Processor;
 
-class ChannelProcessor
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+
+class ChannelProcessor implements ProcessorInterface
 {
-	/**
-	 * @param array{context:array<string, mixed>} $record
-	 * @return array{context:array<string, mixed>, channel?: string}
-	 */
-	public function __invoke($record)
+	public function __invoke(LogRecord $record): LogRecord
 	{
-		if (isset($record['context']['channel'])) {
-			$record['channel'] = (string)$record['context']['channel'];
-			unset($record['context']['channel']);
+		$context = $record->context;
+		if (!isset($context['channel'])) {
+			return $record;
 		}
-		return $record;
+
+		$channel = (string)$context['channel'];
+		unset($context['channel']);
+
+		return $record->with(
+			context: $context,
+			channel: $channel,
+		);
 	}
 }

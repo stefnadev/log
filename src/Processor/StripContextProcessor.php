@@ -2,16 +2,19 @@
 
 namespace Stefna\Logger\Processor;
 
-final class StripContextProcessor
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+
+final class StripContextProcessor implements ProcessorInterface
 {
 	private const DEFAULT_FIELDS = [
 		'%password%',
 	];
 
 	/** @var string[] */
-	private $fields = [];
+	private array $fields = [];
 	/** @var array<array-key, array{field: string, type: string}> */
-	private $wildCardFields = [];
+	private array $wildCardFields = [];
 
 	public function __construct(string ...$fields)
 	{
@@ -29,7 +32,7 @@ final class StripContextProcessor
 				'field' => strtolower(str_replace('%', '', $field)),
 				'type' => $wildcardCount === 2 ? 'containing' : 'beginning',
 			];
-			if ($wildcardCount === 1 && strpos($field, '%') === 0) {
+			if ($wildcardCount === 1 && str_starts_with($field, '%')) {
 				$wildcardField['type'] = 'ending';
 			}
 
@@ -40,15 +43,9 @@ final class StripContextProcessor
 		}
 	}
 
-	/**
-	 * @param array{context: array<string, mixed>} $record
-	 * @return array{context: array<string, mixed>}
-	 */
-	public function __invoke(array $record): array
+	public function __invoke(LogRecord $record): LogRecord
 	{
-		$record['context'] = $this->processContext($record['context']);
-
-		return $record;
+		return $record->with(context: $this->processContext($record->context));
 	}
 
 	/**
@@ -81,7 +78,7 @@ final class StripContextProcessor
 				}
 				if ($pos !== false &&
 					$field['type'] === 'ending' &&
-					substr($searchKey, -strlen($field['field'])) === $field['field']
+					str_ends_with($searchKey, $field['field'])
 				) {
 					unset($context[$key]);
 					continue 2;

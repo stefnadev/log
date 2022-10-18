@@ -2,31 +2,31 @@
 
 namespace Stefna\Logger\Processor;
 
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+
 /**
  * Processor that will execute all callable argument in the context array that
  * way we can deffer executing some heavy calculation that we only want done
  * if the message will actually get logged
  */
-class CallableContextProcessor
+class CallableContextProcessor implements ProcessorInterface
 {
 	/**
 	 * Can be used in context to allow a callback to be executed if the log entry is used
 	 */
 	public const CALLBACK = '_callback-processor';
 
-	/**
-	 * @param array{context:array<string, mixed>} $record
-	 * @return array{context:array<string, mixed>}
-	 */
-	public function __invoke(array $record)
+	public function __invoke(LogRecord $record): LogRecord
 	{
-		if (isset($record['context'][self::CALLBACK])) {
-			$callback = $record['context'][self::CALLBACK];
+		$context = $record->context;
+		if (isset($context[self::CALLBACK])) {
+			$callback = $context[self::CALLBACK];
 			$callback($record);
-			unset($record['context'][self::CALLBACK]);
+			unset($context[self::CALLBACK]);
 		}
 
-		foreach ($record['context'] as $key => &$value) {
+		foreach ($context as $key => &$value) {
 			if (\is_callable($value)) {
 				try {
 					$value = $value();
@@ -37,6 +37,6 @@ class CallableContextProcessor
 			}
 		}
 
-		return $record;
+		return $record->with(context: $context);
 	}
 }

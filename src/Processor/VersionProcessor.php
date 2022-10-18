@@ -2,32 +2,28 @@
 
 namespace Stefna\Logger\Processor;
 
-class VersionProcessor
+use Monolog\LogRecord;
+use Monolog\Processor\ProcessorInterface;
+
+class VersionProcessor implements ProcessorInterface
 {
-	/** @var VersionObject */
-	private $version;
+	public function __construct(
+		private readonly VersionObject $version,
+	) {}
 
-	public function __construct(VersionObject $version)
+	public function __invoke(LogRecord $record): LogRecord
 	{
-		$this->version = $version;
-	}
-
-	/**
-	 * @param array{context:array<string, mixed>} $record
-	 * @return array{context:array<string, mixed>}
-	 */
-	public function __invoke($record): array
-	{
-		if ($this->version->getRelease()) {
-			$record['context']['release'] = $this->version->getRelease();
+		$context = $record->context;
+		if ($this->version->release) {
+			$context['release'] = $this->version->release;
 		}
-		if ($this->version->getVersion()) {
-			$record['context']['version'] = $this->version->getVersion();
+		if ($this->version->version) {
+			$context['version'] = $this->version->version;
 		}
-		if ($this->version->getCommit()) {
-			$record['context']['commit'] = $this->version->getCommit();
+		if ($this->version->commit) {
+			$context['commit'] = $this->version->commit;
 		}
 
-		return $record;
+		return $record->with(context: $context);
 	}
 }

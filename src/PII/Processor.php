@@ -2,6 +2,7 @@
 
 namespace Stefna\Logger\PII;
 
+use Monolog\LogRecord;
 use Stefna\Logger\PII\Anonymizer\Anonymizer;
 use Stefna\Logger\PII\Anonymizer\CardAnonymizer;
 use Stefna\Logger\PII\Anonymizer\PersonAnonymizer;
@@ -9,7 +10,7 @@ use Stefna\Logger\PII\Anonymizer\PersonAnonymizer;
 final class Processor
 {
 	/** @var Anonymizer[] */
-	private $anonymizers;
+	private array $anonymizers;
 
 	public function __construct(Anonymizer ...$anonymizers)
 	{
@@ -25,15 +26,9 @@ final class Processor
 		$this->anonymizers[] = $anonymizer;
 	}
 
-	/**
-	 * @param array{context: array<string, mixed>} $record
-	 * @return array{context: array<string, mixed>}
-	 */
-	public function __invoke(array $record): array
+	public function __invoke(LogRecord $record): LogRecord
 	{
-		$record['context'] = $this->processContext($record['context']);
-
-		return $record;
+		return $record->with(context: $this->processContext($record->context));
 	}
 
 	/**
