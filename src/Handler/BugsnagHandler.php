@@ -5,55 +5,25 @@ namespace Stefna\Logger\Handler;
 use Bugsnag\Client as BugsnagClient;
 use Bugsnag\Report;
 use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Logger;
+use Monolog\Level;
+use Monolog\LogRecord;
 
 class BugsnagHandler extends AbstractProcessingHandler
 {
 	public const IGNORE = 'bugsnagHandlerIgnoreField';
 
-	/**
-	 * Monolog error codes mapped on to bugSnag severities.
-	 *
-	 * @var string[]
-	 */
-	private const SEVERITY_MAPPING = [
-		Logger::DEBUG     => 'info',
-		Logger::INFO      => 'info',
-		Logger::NOTICE    => 'info',
-		Logger::WARNING   => 'warning',
-		Logger::ERROR     => 'error',
-		Logger::CRITICAL  => 'error',
-		Logger::ALERT     => 'error',
-		Logger::EMERGENCY => 'error',
-	];
-	/** @var BugsnagClient */
-	protected $client;
-	/** @var bool */
-	private $includeContext;
-	/** @var bool */
-	private $addBreadCrumbs;
-	/** @var int */
-	private $realLevel;
 	/** @var array<array-key, string> */
-	private $filter;
+	private array $filter;
 
 	public function __construct(
-		BugsnagClient $client,
-		int $level = Logger::ERROR,
+		protected BugsnagClient $client,
+		private readonly Level $realLevel = Level::Error,
 		bool $bubble = true,
-		bool $includeContext = false,
-		bool $addBreadCrumbs = false
+		private readonly bool $includeContext = false,
+		private readonly bool $addBreadCrumbs = false
 	) {
-		if ($addBreadCrumbs) {
-			$this->realLevel = $level;
-			$level = Logger::DEBUG;
-		}
-
-		parent::__construct($level, $bubble);
-		$this->client = $client;
+		parent::__construct($addBreadCrumbs ? Level::Debug : $this->realLevel, $bubble);
 		$this->client->registerCallback([$this, 'cleanStacktrace']);
-		$this->includeContext = $includeContext;
-		$this->addBreadCrumbs = $addBreadCrumbs;
 	}
 
 	/**
@@ -64,79 +34,63 @@ class BugsnagHandler extends AbstractProcessingHandler
 		$this->filter = $filter;
 	}
 
-	/**
-	 * @inheritdoc
-	 * @param array{
-	 * 		context: array<string, mixed>,
-	 * 		level: int,
-	 * 		channel?: string,
-	 * 		extra?: mixed[],
-	 * 		message: string,
-	 * 		formatted: string
-	 * } $record
-	 */
-	protected function write(array $record): void
+	protected function write(LogRecord $record): void
 	{
-		if (isset($record['context'][self::IGNORE])) {
+		if (isset($record->context[self::IGNORE])) {
 			return;
 		}
 
-		if ($this->addBreadCrumbs && $record['level'] < $this->realLevel) {
-			$title = 'Log ' . Logger::getLevelName($record['level']);
+		if ($this->addBreadCrumbs && $record->level->isLowerThan($this->realLevel)) {
+			$title = 'Log ' . $record->level->getName();
+			$context = $record->context;
 
-			if (isset($record['context']['exception'])) {
-				$title = get_class($record['context']['exception']);
-				$data = ['name' => $title, 'message' => $record['context']['exception']->getMessage()];
-				unset($record['context']['exception']);
+			if (isset($context['exception'])) {
+				$title = get_class($context['exception']);
+				$data = ['name' => $title, 'message' => $context['exception']->getMessage()];
+				unset($context['exception']);
 			}
 			else {
-				$data = ['message' => $record['message']];
+				$data = ['message' => $record->message];
 			}
-			$metaData = array_merge($data, $record['context']);
+			$metaData = array_merge($data, $context);
 			$this->client->leaveBreadcrumb($title, 'log', array_filter($metaData));
 
 			return ;
 		}
 
-		$severity = $this->getSeverity($record['level']);
+		$severity = match($record->level) {
+			Level::Error, Level::Critical, Level::Alert, Level::Emergency => 'error',
+			Level::Debug, Level::Info, Level::Notice => 'info',
+			Level::Warning   => 'warning',
+		};
 		$reportCallback = function (Report $report) use ($record, $severity) {
 			$report->setSeverity($severity);
-			if (isset($record['channel'])) {
-				$report->setMetaData(['channel' => $record['channel']]);
+			if (isset($record->channel)) {
+				$report->setMetaData(['channel' => $record->channel]);
 			}
-			if (isset($record['extra'])) {
-				$report->setMetaData($record['extra']);
+			if (isset($record->extra)) {
+				$report->setMetaData($record->extra);
 			}
-			if ($this->includeContext && isset($record['context'])) {
-				unset($record['context']['exception']);
-				$report->setMetaData($record['context']);
+			if ($this->includeContext) {
+				$context = $record->context;
+				unset($context['exception']);
+				$report->setMetaData($record->context);
 			}
 		};
 
-		if (isset($record['context']['exception'])) {
+		if (isset($record->context['exception'])) {
 			$this->client->notifyException(
-				$record['context']['exception'],
+				$record->context['exception'],
 				$reportCallback
 			);
 		}
 		else {
 			$this->client->notifyError(
-				(string) $record['message'],
-				(string) $record['formatted'],
+				$record->message,
+				(string) $record->formatted,
 				$reportCallback
 			);
 		}
-	}
-
-	/**
-	 * Returns the Bugsnag severity from a monolog error code.
-	 *
-	 * @param int $errorCode - one of the Logger:: constants.
-	 * @return string
-	 */
-	private function getSeverity($errorCode): string
-	{
-		return self::SEVERITY_MAPPING[$errorCode] ?? self::SEVERITY_MAPPING[Logger::ERROR];
 	}
 
 	public function cleanStacktrace(Report $report): void
@@ -146,14 +100,14 @@ class BugsnagHandler extends AbstractProcessingHandler
 		if ($this->filter) {
 			$frames = $stacktrace->getFrames();
 			foreach ($this->filter as $namespace) {
-				if (strpos($frames[0]['method'], $namespace) === 0) {
+				if (str_starts_with($frames[0]['method'], $namespace)) {
 					//if an error have happened in one of the filtered namespaces don't remove that information
 					break;
 				}
 				// This is a workaround for not being allowed to replace stacktrace in report
 				/** @noinspection CallableInLoopTerminationConditionInspection */
 				for ($i = 0; $i < count($frames); $i++) {
-					if (strpos($frames[$i]['method'], $namespace) === 0) {
+					if (str_starts_with($frames[$i]['method'], $namespace)) {
 						$stacktrace->removeFrame($i);
 						$frames = $stacktrace->getFrames();
 						$i--;
@@ -174,8 +128,8 @@ class BugsnagHandler extends AbstractProcessingHandler
 		$stacktrace->removeFrame(0);
 
 		// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
-		while (strpos($stacktrace->getFrames()[0]['method'], 'Monolog\\') === 0 ||
-			strpos($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\') === 0
+		while (str_starts_with($stacktrace->getFrames()[0]['method'], 'Monolog\\') ||
+			str_starts_with($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\')
 		) {
 			$stacktrace->removeFrame(0);
 		}

@@ -3,44 +3,23 @@
 namespace Stefna\Logger\Formatter;
 
 use Monolog\Formatter\JsonFormatter;
+use Monolog\LogRecord;
 
 final class CloudWatchFormatter extends JsonFormatter
 {
-	/**
-	 * @param array{
-	 * 		datetime?: \DateTimeInterface|null,
-	 * 		level_name: string,
-	 * 		context: array{requestId?: string}
-	 * } $record
-	 */
-	public function format(array $record): string
+	private const DATE_FORMAT = 'Y-m-d\TH:i:s.vp';
+
+	public function format(LogRecord $record): string
 	{
-		$dateTime = $record['datetime'] ?? null;
-		if (!$dateTime instanceof \DateTimeInterface) {
-			// this should be impossible
-			$dateTime = new \DateTimeImmutable();
-		}
-		$record['datetime'] = $dateTime->format('Y-m-d\TH:i:s.up');
 		$line = parent::format($record);
-		$requestId = $record['context']['requestId'] ?? 'empty';
+		$requestId = $record->context['requestId'] ?? 'empty';
 
-		$dateFormat = 'Y-m-d\TH:i:s.v';
-		if (PHP_VERSION_ID > 80000) {
-			$dateFormat .= 'p';
-		}
-		else {
-			// for php < 8 just hard code timezone to utc
-			$dateFormat .= '\Z';
-		}
-
-		$line = sprintf(
+		return sprintf(
 			"%s\t%s\t%s\t%s",
-			$dateTime->format($dateFormat),
+			$record->datetime->format(self::DATE_FORMAT),
 			$requestId,
-			$record['level_name'],
-			$line
+			$record->level->getName(),
+			$line,
 		);
-
-		return $line;
 	}
 }

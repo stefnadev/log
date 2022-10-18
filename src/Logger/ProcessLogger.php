@@ -27,14 +27,16 @@ final class ProcessLogger extends AbstractLogger
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{
-		$record = [
-			'level' => $level,
-			'message' => $message,
-			'context' => $context,
-		];
+		$record = new LogRecord(
+			new \DateTimeImmutable(),
+			'',
+			Level::fromName($level),
+			$message,
+			$context,
+		);
 		foreach ($this->processors as $processor) {
 			$record = $processor($record);
 		}
-		$this->logger->log($record['level'], $record['message'], $record['context']);
+		$this->logger->log($record->level->toPsrLogLevel(), $record['message'], $record['context']);
 	}
 }
