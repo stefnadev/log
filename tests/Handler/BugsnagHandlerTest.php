@@ -5,6 +5,7 @@ namespace Stefna\Logger\Handler;
 use Bugsnag\Client;
 use Bugsnag\Configuration;
 use Bugsnag\Report;
+use Monolog\Level;
 use Monolog\Logger;
 use PHPUnit\Framework\TestCase;
 
@@ -116,7 +117,7 @@ class BugsnagHandlerTest extends TestCase
 				return true;
 			})
 		);
-		$handler = new BugsnagHandler($this->client, Logger::ERROR, true, true);
+		$handler = new BugsnagHandler($this->client, Level::Error, true, true);
 		$logger = new Logger($loggerChannel, [$handler]);
 		$logger->error('test', $context);
 	}
@@ -164,7 +165,7 @@ class BugsnagHandlerTest extends TestCase
 				return true;
 			})
 		);
-		$handler = new BugsnagHandler($this->client, Logger::ERROR, true, true, true);
+		$handler = new BugsnagHandler($this->client, Level::Error, true, true, true);
 		$logger = new Logger($loggerChannel, [$handler]);
 		$logger->debug('breadcrumb');
 		$logger->error('test', $context);

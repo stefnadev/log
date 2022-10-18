@@ -2,7 +2,10 @@
 
 namespace Stefna\Logger\Handler;
 
+use Monolog\Level;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
+use Stefna\Logger\Mock\StubContextLogRecord;
 use Stefna\Logger\PII\Fields;
 use Stefna\Logger\PII\Processor;
 
@@ -24,9 +27,7 @@ final class PiiProcessorTest extends TestCase
 		];
 
 		$processor = new Processor();
-		$record = $processor([
-			'context' => $context
-		]);
+		$record = $processor(new StubContextLogRecord($context));
 
 		$this->assertSame($expectedContext, $record['context']);
 	}
@@ -52,9 +53,7 @@ final class PiiProcessorTest extends TestCase
 		];
 
 		$processor = new Processor();
-		$record = $processor([
-			'context' => $context
-		]);
+		$record = $processor(new StubContextLogRecord($context));
 
 		$this->assertSame($expectedContext, $record['context']);
 	}
@@ -81,9 +80,7 @@ final class PiiProcessorTest extends TestCase
 		];
 
 		$processor = new Processor();
-		$record = $processor([
-			'context' => $context
-		]);
+		$record = $processor(new StubContextLogRecord($context));
 
 		$this->assertSame($expectedContext, $record['context']);
 	}
@@ -110,9 +107,7 @@ final class PiiProcessorTest extends TestCase
 		];
 
 		$processor = new Processor();
-		$record = $processor([
-			'context' => $context
-		]);
+		$record = $processor(new StubContextLogRecord($context));
 
 		$this->assertSame($expectedContext, $record['context']);
 	}
@@ -153,9 +148,7 @@ final class PiiProcessorTest extends TestCase
 		];
 
 		$processor = new Processor();
-		$record = $processor([
-			'context' => $context
-		]);
+		$record = $processor(new StubContextLogRecord($context));
 
 		$this->assertSame($expectedContext, $record['context']);
 	}

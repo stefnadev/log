@@ -3,6 +3,7 @@
 namespace Stefna\Logger\Handler;
 
 use PHPUnit\Framework\TestCase;
+use Stefna\Logger\Mock\StubContextLogRecord;
 use Stefna\Logger\Processor\StripContextProcessor;
 
 final class StripContextProcessorTest extends TestCase
@@ -43,7 +44,7 @@ final class StripContextProcessorTest extends TestCase
 			'EndingWithNot' => 'stay',
 		];
 
-		$processedContext = $stripProcessor(['context' => $context])['context'];
+		$processedContext = $stripProcessor(new StubContextLogRecord($context))->context;
 
 		$this->assertSame($expectedContext, $processedContext);
 	}
@@ -64,7 +65,7 @@ final class StripContextProcessorTest extends TestCase
 
 		$expectedContext = [];
 
-		$processedContext = $stripProcessor(['context' => $context])['context'];
+		$processedContext = $stripProcessor(new StubContextLogRecord($context))->context;
 
 		$this->assertSame($expectedContext, $processedContext);
 	}
