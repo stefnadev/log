@@ -19,20 +19,19 @@ class MonologManager extends AbstractManager
 	private const MAIN_LOGGER = '_main';
 
 	/** @var \Monolog\Logger[] */
-	private static $monologInstances = [];
+	private static array $monologInstances = [];
 
 	/** @var HandlerInterface[] */
-	private $monologHandlers = [];
+	private array $monologHandlers = [];
 	/** @var callable[] */
-	private $monologProcessors = [];
-	/** @var FilterFactory */
-	private $filterFactory;
+	private array $monologProcessors = [];
 
-	public function __construct(\Monolog\Logger $mainLogger, FilterFactory $filterFactory)
-	{
+	public function __construct(
+		\Monolog\Logger $mainLogger,
+		private readonly FilterFactory $filterFactory,
+	) {
 		self::$monologInstances[self::MAIN_LOGGER] = $mainLogger;
 		$this->monologProcessors[] = new ChannelProcessor();
-		$this->filterFactory = $filterFactory;
 	}
 
 	public function getMainLogger(): \Monolog\Logger
@@ -40,7 +39,7 @@ class MonologManager extends AbstractManager
 		return self::$monologInstances[self::MAIN_LOGGER];
 	}
 
-	public function pushProcessor(callable $callback, string $channel = null): self
+	public function pushProcessor(callable $callback, string $channel = null): static
 	{
 		if ($channel === null) {
 			array_unshift($this->monologProcessors, $callback);
@@ -55,7 +54,7 @@ class MonologManager extends AbstractManager
 		return $this;
 	}
 
-	public function pushHandler(HandlerInterface $handler, string $channel = null): self
+	public function pushHandler(HandlerInterface $handler, string $channel = null): static
 	{
 		if ($channel === null) {
 			array_unshift($this->monologHandlers, $handler);

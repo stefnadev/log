@@ -2,6 +2,8 @@
 
 namespace Stefna\Logger\Logger;
 
+use Monolog\Level;
+use Monolog\LogRecord;
 use Psr\Log\AbstractLogger;
 use Psr\Log\LoggerInterface;
 
@@ -10,21 +12,20 @@ use Psr\Log\LoggerInterface;
  */
 final class ProcessLogger extends AbstractLogger
 {
-	/** @var LoggerInterface */
-	private $logger;
 	/** @var callable[] */
-	private $processors;
+	private array $processors;
 
-	public function __construct(LoggerInterface $logger, callable ...$processors)
-	{
-		$this->logger = $logger;
+	public function __construct(
+		private readonly LoggerInterface $logger,
+		callable ...$processors
+	) {
 		$this->processors = $processors;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$record = [
 			'level' => $level,

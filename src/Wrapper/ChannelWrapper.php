@@ -7,27 +7,12 @@ use Psr\Log\LoggerInterface;
 
 class ChannelWrapper extends AbstractLogger
 {
-	/** @var LoggerInterface */
-	private $logger;
-	/** @var string */
-	private $channel;
+	public function __construct(
+		private readonly LoggerInterface $logger,
+		private readonly string $channel,
+	) {}
 
-	public function __construct(LoggerInterface $logger, string $channel)
-	{
-		$this->logger = $logger;
-		$this->channel = $channel;
-	}
-
-	/**
-	 * Logs with an arbitrary level.
-	 *
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array<string, mixed> $context
-	 *
-	 * @return void
-	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$context['channel'] = $this->channel;
 		$this->logger->log($level, $message, $context);

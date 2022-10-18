@@ -8,20 +8,19 @@ use Stefna\Logger\Filters\FilterInterface;
 class BufferFilterLogger extends BufferLogger
 {
 	/** @var FilterInterface[] */
-	private $filters;
-	/** @var LoggerInterface */
-	private $logger;
+	private array $filters;
 
-	public function __construct(LoggerInterface $logger, FilterInterface ...$filters)
-	{
-		$this->logger = $logger;
+	public function __construct(
+		private readonly LoggerInterface $logger,
+		FilterInterface ...$filters
+	) {
 		$this->filters = $filters;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		parent::log($level, $message, $context);
 

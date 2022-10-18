@@ -9,7 +9,7 @@ class SystemErrorLogger extends AbstractLogger
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$messageFormat = "[%s] %s: %s %s\n";
 		$message = sprintf($messageFormat, date('Y-m-d H:i:s:v'), $level, $message, json_encode($context));

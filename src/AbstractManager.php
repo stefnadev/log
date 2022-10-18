@@ -8,7 +8,7 @@ use Stefna\Logger\Config\ConfigInterface;
 abstract class AbstractManager implements ManagerInterface
 {
 	/** @var LoggerInterface[] */
-	protected static $loggerInstances = [];
+	protected static array $loggerInstances = [];
 
 	public function getLogger(string $channel, ?ConfigInterface $config = null): LoggerInterface
 	{

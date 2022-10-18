@@ -10,10 +10,9 @@ use Stefna\Logger\Exceptions\ManagerNotDefined;
 
 class Logger
 {
-	/** @var ManagerInterface */
-	private static $manager;
+	private static ManagerInterface $manager;
 	/** @var array<string, ConfigInterface> */
-	private static $config = [];
+	private static array $config = [];
 
 	public static function setManager(ManagerInterface $manager): void
 	{

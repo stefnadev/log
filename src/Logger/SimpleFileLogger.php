@@ -13,18 +13,15 @@ use Psr\Log\AbstractLogger;
  */
 class SimpleFileLogger extends AbstractLogger
 {
-	/** @var string */
-	private $filePath;
 
-	public function __construct(string $filePath)
-	{
-		$this->filePath = $filePath;
-	}
+	public function __construct(
+		private readonly string $filePath,
+	) {}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$messageFormat = "[%s] %s: %s %s\n";
 		$message = sprintf($messageFormat, date('Y-m-d H:i:s:v'), $level, $message, json_encode($context));

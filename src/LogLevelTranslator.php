@@ -8,7 +8,7 @@ use Stefna\Logger\Exceptions\LogLevelNotFoundException;
 final class LogLevelTranslator
 {
 	/** @var array<int, string> */
-	private static $levelsA = [
+	private static array $levelsA = [
 		Rfc5424LogLevels::EMERGENCY => LogLevel::EMERGENCY,
 		Rfc5424LogLevels::ALERT => LogLevel::ALERT,
 		Rfc5424LogLevels::CRITICAL => LogLevel::CRITICAL,
@@ -19,7 +19,7 @@ final class LogLevelTranslator
 		Rfc5424LogLevels::DEBUG => LogLevel::DEBUG,
 	];
 	/** @var array<string, int> */
-	private static $levelsB = [
+	private static array $levelsB = [
 		LogLevel::EMERGENCY => Rfc5424LogLevels::EMERGENCY,
 		LogLevel::ALERT => Rfc5424LogLevels::ALERT,
 		LogLevel::CRITICAL => Rfc5424LogLevels::CRITICAL,

@@ -8,21 +8,20 @@ use Stefna\Logger\Filters\FilterInterface;
 
 class FilterLogger extends AbstractLogger
 {
-	/** @var LoggerInterface */
-	private $logger;
 	/** @var FilterInterface[] */
-	private $filters;
+	private array $filters;
 
-	public function __construct(LoggerInterface $logger, FilterInterface ...$filters)
-	{
-		$this->logger = $logger;
+	public function __construct(
+		private readonly LoggerInterface $logger,
+		FilterInterface ...$filters
+	) {
 		$this->filters = $filters;
 	}
 
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		foreach ($this->filters as $filter) {
 			if (!$filter($level, $message, $context)) {

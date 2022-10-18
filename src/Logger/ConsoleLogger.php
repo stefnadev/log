@@ -14,10 +14,8 @@ class ConsoleLogger extends AbstractLogger
 	public const INFO = 'info';
 	public const ERROR = 'error';
 
-	/** @var OutputInterface */
-	private $output;
 	/** @var array<string, int> */
-	private $verbosityLevelMap = [
+	private array $verbosityLevelMap = [
 		LogLevel::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
 		LogLevel::ALERT => OutputInterface::VERBOSITY_NORMAL,
 		LogLevel::CRITICAL => OutputInterface::VERBOSITY_NORMAL,
@@ -28,7 +26,7 @@ class ConsoleLogger extends AbstractLogger
 		LogLevel::DEBUG => OutputInterface::VERBOSITY_DEBUG,
 	];
 	/** @var array<string, string> */
-	private $formatLevelMap = [
+	private array $formatLevelMap = [
 		LogLevel::EMERGENCY => self::ERROR,
 		LogLevel::ALERT => self::ERROR,
 		LogLevel::CRITICAL => self::ERROR,
@@ -38,18 +36,18 @@ class ConsoleLogger extends AbstractLogger
 		LogLevel::INFO => self::INFO,
 		LogLevel::DEBUG => self::INFO,
 	];
-	/** @var bool */
-	private $errored = false;
-	/** @var OutputInterface|null */
-	private $disabledOutput;
+	private bool $errored = false;
+	private ?OutputInterface $disabledOutput;
 
 	/**
 	 * @param array<string, int> $verbosityLevelMap
 	 * @param array<string, string> $formatLevelMap
 	 */
-	public function __construct(OutputInterface $output, array $verbosityLevelMap = [], array $formatLevelMap = [])
-	{
-		$this->output = $output;
+	public function __construct(
+		private OutputInterface $output,
+		array $verbosityLevelMap = [],
+		array $formatLevelMap = [],
+	) {
 		$this->verbosityLevelMap = $verbosityLevelMap + $this->verbosityLevelMap;
 		$this->formatLevelMap = $formatLevelMap + $this->formatLevelMap;
 	}
@@ -57,7 +55,7 @@ class ConsoleLogger extends AbstractLogger
 	/**
 	 * {@inheritdoc}
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		if (!isset($this->verbosityLevelMap[$level])) {
 			throw new InvalidArgumentException(sprintf('The log level "%s" does not exist.', $level));

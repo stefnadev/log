@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 class ChainWrapper extends AbstractLogger
 {
 	/** @var LoggerInterface[] */
-	private $loggers;
+	private array $loggers;
 
 	public function __construct(LoggerInterface ...$loggers)
 	{
@@ -20,16 +20,7 @@ class ChainWrapper extends AbstractLogger
 		$this->loggers[] = $logger;
 	}
 
-	/**
-	 * Logs with an arbitrary level.
-	 *
-	 * @param mixed $level
-	 * @param string $message
-	 * @param array<string, mixed> $context
-	 *
-	 * @return void
-	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		foreach ($this->loggers as $logger) {
 			$logger->log($level, $message, $context);

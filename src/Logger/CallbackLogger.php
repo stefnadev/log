@@ -17,7 +17,7 @@ class CallbackLogger extends AbstractLogger
 	/**
 	 * @inheritdoc
 	 */
-	public function log($level, $message, array $context = []): void
+	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$logger = $this->logger;
 		$logger($level, $message, $context);
