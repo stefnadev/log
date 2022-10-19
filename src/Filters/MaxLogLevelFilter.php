@@ -2,14 +2,14 @@
 
 namespace Stefna\Logger\Filters;
 
-use Psr\Log\LogLevel;
+use Monolog\Level;
 
 class MaxLogLevelFilter extends LogLevelRangeFilter
 {
 	public const KEY = 'max-level';
 
-	public function __construct(string $maxLevel = LogLevel::EMERGENCY)
+	public function __construct(string|Level $maxLevel = Level::Emergency)
 	{
-		parent::__construct(LogLevel::DEBUG, $maxLevel);
+		parent::__construct(Level::Debug, $maxLevel);
 	}
 }

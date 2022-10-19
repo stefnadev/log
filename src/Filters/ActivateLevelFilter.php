@@ -2,27 +2,30 @@
 
 namespace Stefna\Logger\Filters;
 
+use Monolog\Level;
 use Psr\Log\LogLevel;
-use Stefna\Logger\LogLevelTranslator;
 
 class ActivateLevelFilter implements FilterInterface
 {
-	private int $activateLevel;
+	private Level $activateLevel;
 	private bool $active = false;
 
-	public function __construct(string $activateLevel = LogLevel::ERROR)
+	/**
+	 * @phpstan-param LogLevel::*|Level $activateLevel
+	 */
+	public function __construct(string|Level $activateLevel = Level::Error)
 	{
-		$this->activateLevel = 7 - LogLevelTranslator::getLevelNo($activateLevel);
+		$this->activateLevel = $activateLevel instanceof Level ? $activateLevel : Level::fromName($activateLevel);
 	}
 
 	/**
 	 * @inheritdoc
+	 * @phpstan-param LogLevel::* $level
 	 */
-	public function __invoke(string $level, string $message, array $context): bool
+	public function __invoke(string $level, string|\Stringable $message, array $context): bool
 	{
 		if (!$this->active) {
-			$levelNr = 7 - LogLevelTranslator::getLevelNo($level);
-			$this->active = $this->activateLevel <= $levelNr;
+			$this->active = $this->activateLevel->includes(Level::fromName($level));
 		}
 		return $this->active;
 	}

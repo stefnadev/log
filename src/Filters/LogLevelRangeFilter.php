@@ -2,40 +2,39 @@
 
 namespace Stefna\Logger\Filters;
 
+use Monolog\Level;
 use Psr\Log\LogLevel;
-use Stefna\Logger\LogLevelTranslator;
 
 class LogLevelRangeFilter implements FilterInterface
 {
 	public const KEY = 'log-level';
 
-	private int $minLevel;
-	private int $maxLevel;
-
+	/**
+	 * @phpstan-param LogLevel::*|Level $minLevel
+	 * @phpstan-param LogLevel::*|Level $maxLevel
+	 */
 	public function __construct(
-		string $minLevel = LogLevel::DEBUG,
-		string $maxLevel = LogLevel::EMERGENCY
-	) {
-		$this->minLevel = 7 - LogLevelTranslator::getLevelNo($minLevel);
-		$this->maxLevel = 7 - LogLevelTranslator::getLevelNo($maxLevel);
-	}
+		private readonly string|Level $minLevel = Level::Debug,
+		private readonly string|Level $maxLevel = Level::Emergency,
+	) {}
 
 	/**
 	 * @inheritdoc
+	 * @phpstan-param LogLevel::* $psrLevel
 	 */
-	public function __invoke(string $psrLevel, string $message, array $context = []): bool
+	public function __invoke(string $psrLevel, string|\Stringable $message, array $context = []): bool
 	{
-		$level = 7 - LogLevelTranslator::getLevelNo($psrLevel);
-		return $this->minLevel <= $level && $this->maxLevel >= $level;
+		$level = Level::fromName($psrLevel);
+		return $this->getMinLevel()->includes($level) && $level->includes($this->getMaxLevel());
 	}
 
-	public function getMinLevel(): int
+	public function getMinLevel(): Level
 	{
-		return $this->minLevel;
+		return $this->minLevel instanceof Level ? $this->minLevel : Level::fromName($this->minLevel);
 	}
 
-	public function getMaxLevel(): int
+	public function getMaxLevel(): Level
 	{
-		return $this->maxLevel;
+		return $this->maxLevel instanceof Level ? $this->maxLevel : Level::fromName($this->maxLevel);
 	}
 }
