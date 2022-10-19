@@ -44,7 +44,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 			$title = 'Log ' . $record->level->getName();
 			$context = $record->context;
 
-			if (isset($context['exception'])) {
+			if (isset($context['exception']) && $context['exception'] instanceof \Throwable) {
 				$title = get_class($context['exception']);
 				$data = ['name' => $title, 'message' => $context['exception']->getMessage()];
 				unset($context['exception']);
@@ -58,7 +58,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 			return ;
 		}
 
-		$severity = match($record->level) {
+		$severity = match ($record->level) {
 			Level::Error, Level::Critical, Level::Alert, Level::Emergency => 'error',
 			Level::Debug, Level::Info, Level::Notice => 'info',
 			Level::Warning   => 'warning',

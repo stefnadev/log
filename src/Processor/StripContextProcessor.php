@@ -45,7 +45,8 @@ final class StripContextProcessor implements ProcessorInterface
 
 	public function __invoke(LogRecord $record): LogRecord
 	{
-		return $record->with(context: $this->processContext($record->context));
+		$context = $this->processContext($record->context);
+		return $record->with(context: $context);
 	}
 
 	/**

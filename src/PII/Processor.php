@@ -28,7 +28,8 @@ final class Processor
 
 	public function __invoke(LogRecord $record): LogRecord
 	{
-		return $record->with(context: $this->processContext($record->context));
+		$newContext = $this->processContext($record->context);
+		return $record->with(context: $newContext);
 	}
 
 	/**

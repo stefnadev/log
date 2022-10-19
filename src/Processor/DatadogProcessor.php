@@ -25,7 +25,7 @@ final class DatadogProcessor implements ProcessorInterface
 		}
 
 		// todo needs to be moved from processor to handler since we can't modify the record
-
+		/*
 		// needs to be at top level for datadog to handle them
 		$record[DatadogHandler::TAGS] = implode(',', $tags);
 
@@ -38,7 +38,7 @@ final class DatadogProcessor implements ProcessorInterface
 			$record[DatadogHandler::HOSTNAME] = $context[DatadogHandler::HOSTNAME];
 			unset($context[DatadogHandler::HOSTNAME]);
 		}
-
+		*/
 		return $record;
 	}
 }

@@ -18,7 +18,7 @@ final class LambdaProcessorMiddleware implements MiddlewareInterface
 		$mainLogger = Logger::getManager()->getMainLogger();
 		if ($context instanceof Context && $mainLogger instanceof \Monolog\Logger) {
 			$mainLogger->pushProcessor(static function (LogRecord $record) use ($context) {
-				$recordContext = $record['context'];
+				$recordContext = $record->context;
 				$recordContext['requestId'] = $context->getAwsRequestId();
 				return $record->with(context: $recordContext);
 			});
