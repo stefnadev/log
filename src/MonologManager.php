@@ -108,7 +108,7 @@ class MonologManager extends AbstractManager
 						$newHandler = clone $mainHandler;
 						$newHandler->setLevel($specialLogLevel);
 						$handlers[$mainKey] = $newHandler;
-						$logger->setHandlers($handlers);
+						$logger->setHandlers(array_values($handlers));
 					}
 				}
 

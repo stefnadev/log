@@ -79,7 +79,7 @@ class ConsoleLogger extends AbstractLogger
 				'<%1$s>[%2$s] %3$s</%1$s>',
 				$this->formatLevelMap[$level],
 				$level,
-				$this->interpolate($message, $context)
+				$this->interpolate((string)$message, $context)
 			), $this->verbosityLevelMap[$level]);
 		}
 	}

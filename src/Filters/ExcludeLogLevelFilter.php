@@ -17,7 +17,7 @@ class ExcludeLogLevelFilter implements FilterInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function __invoke(string $level, string $message, array $context = []): bool
+	public function __invoke(string $level, string|\Stringable $message, array $context = []): bool
 	{
 		return !\in_array($level, $this->excludedLogLevel, true);
 	}

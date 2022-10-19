@@ -32,7 +32,7 @@ final class ProcessLogger extends AbstractLogger
 			new \DateTimeImmutable(),
 			'',
 			Level::fromName($level),
-			$message,
+			(string)$message,
 			$context,
 		);
 		foreach ($this->processors as $processor) {

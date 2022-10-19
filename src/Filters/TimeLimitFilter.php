@@ -16,7 +16,7 @@ class TimeLimitFilter implements FilterInterface
 	/**
 	 * @param array<string, mixed> $context
 	 */
-	public function __invoke(string $level, string $message, array $context): bool
+	public function __invoke(string $level, string|\Stringable $message, array $context): bool
 	{
 		$key = md5(serialize([$level, $message, $context]));
 		if (!$this->cache->has($key)) {

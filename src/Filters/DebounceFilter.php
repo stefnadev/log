@@ -17,7 +17,7 @@ class DebounceFilter implements FilterInterface
 	/**
 	 * @inheritdoc
 	 */
-	public function __invoke(string $level, string $message, array $context = []): bool
+	public function __invoke(string $level, string|\Stringable $message, array $context = []): bool
 	{
 		// no interval in context skip running debouncer
 		if (!isset($context[self::DEBOUNCE_INTERVAL])) {
