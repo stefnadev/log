@@ -87,7 +87,7 @@ class BugsnagHandlerTest extends TestCase
 
 		$handler->cleanStacktrace($report);
 
-		$this->assertCount($frameCount - 9, $report->getStacktrace()->getFrames());
+		$this->assertCount($frameCount - 10, $report->getStacktrace()->getFrames());
 	}
 
 	public function testIncludeContext(): void
