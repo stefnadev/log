@@ -3,12 +3,13 @@
 namespace Stefna\Logger\Config;
 
 use Monolog\Handler\HandlerInterface;
+use Monolog\Processor\ProcessorInterface;
 use Stefna\Logger\Filters\FilterInterface;
 
 interface ConfigInterface
 {
 	/**
-	 * @return array<array-key, callable>
+	 * @return array<array-key, callable|ProcessorInterface>
 	 */
 	public function getProcessors(): array;
 

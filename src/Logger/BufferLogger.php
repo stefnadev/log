@@ -3,14 +3,17 @@
 namespace Stefna\Logger\Logger;
 
 use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
 
 class BufferLogger extends AbstractLogger
 {
-	/** @var array<array-key, array{0: string, 1: string, 2: array<string, mixed>}> */
+	/** @var array<array-key, array{0: string, 1: string|\Stringable, 2: array<string, mixed>}> */
 	protected array $buffer = [];
 
 	/**
 	 * @inheritdoc
+	 * @phpstan-param LogLevel::* $level
+	 * @param array<string, mixed> $context
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{
@@ -18,7 +21,7 @@ class BufferLogger extends AbstractLogger
 	}
 
 	/**
-	 * @return array<array-key, array{0: string, 1: string, 2: array<string, mixed>}>
+	 * @return array<array-key, array{0: string, 1: string|\Stringable, 2: array<string, mixed>}>
 	 */
 	public function getBuffer(): array
 	{

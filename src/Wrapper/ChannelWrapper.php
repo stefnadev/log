@@ -12,6 +12,9 @@ class ChannelWrapper extends AbstractLogger
 		private readonly string $channel,
 	) {}
 
+	/**
+	 * @param array<mixed> $context
+	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		$context['channel'] = $this->channel;

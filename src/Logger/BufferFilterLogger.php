@@ -19,6 +19,7 @@ class BufferFilterLogger extends BufferLogger
 
 	/**
 	 * @inheritdoc
+	 * @param array<mixed> $context
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{

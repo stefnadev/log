@@ -4,8 +4,8 @@ namespace Stefna\Logger\Filters;
 
 class FilterFactory
 {
-	/** @var array<string, array{0: class-string, 1: string[]}> */
-	private static $map = [
+	/** @var array<string, array{0: class-string<FilterInterface>, 1: string[]}> */
+	private static array $map = [
 		CallbackFilter::KEY => [CallbackFilter::class, ['callback']],
 		ExcludeLogLevelFilter::KEY => [ExcludeLogLevelFilter::class, ['level']],
 		MaxLogLevelFilter::KEY => [MaxLogLevelFilter::class, ['level']],

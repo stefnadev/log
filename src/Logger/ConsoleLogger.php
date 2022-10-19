@@ -53,7 +53,8 @@ class ConsoleLogger extends AbstractLogger
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * @inheritdoc
+	 * @param array<mixed> $context
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{

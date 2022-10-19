@@ -24,6 +24,7 @@ final class ProcessLogger extends AbstractLogger
 
 	/**
 	 * @inheritdoc
+	 * @param array<mixed> $context
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{

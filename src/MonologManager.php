@@ -9,7 +9,6 @@ use Stefna\Logger\Config\ConfigInterface;
 use Stefna\Logger\Filters\FilterFactory;
 use Stefna\Logger\Filters\FilterInterface;
 use Stefna\Logger\Filters\LogLevelRangeFilter;
-use Stefna\Logger\Logger\CallbackLogger;
 use Stefna\Logger\Logger\FilterLogger;
 use Stefna\Logger\Processor\ChannelProcessor;
 use Stefna\Logger\Wrapper\ChannelWrapper;

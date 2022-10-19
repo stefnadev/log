@@ -9,6 +9,9 @@ class CallbackLogger extends AbstractLogger
 	/** @var callable */
 	private $logger;
 
+	/**
+	 * @phpstan-param callable(string, string|\Stringable, array<mixed>): void $logger
+	 */
 	public function __construct(callable $logger)
 	{
 		$this->logger = $logger;
@@ -16,6 +19,7 @@ class CallbackLogger extends AbstractLogger
 
 	/**
 	 * @inheritdoc
+	 * @param array<mixed> $context
 	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{

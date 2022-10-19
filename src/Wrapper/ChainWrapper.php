@@ -20,6 +20,9 @@ class ChainWrapper extends AbstractLogger
 		$this->loggers[] = $logger;
 	}
 
+	/**
+	 * @param array<mixed> $context
+	 */
 	public function log($level, string|\Stringable $message, array $context = []): void
 	{
 		foreach ($this->loggers as $logger) {
