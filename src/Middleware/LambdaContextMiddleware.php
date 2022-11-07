@@ -17,12 +17,15 @@ final class LambdaContextMiddleware implements MiddlewareInterface
 		$context = $request->getAttribute(self::LAMBDA_CONTEXT);
 		if (!$context instanceof Context && isset($_SERVER['LAMBDA_INVOCATION_CONTEXT'])) {
 			$lambdaContext = json_decode($_SERVER['LAMBDA_INVOCATION_CONTEXT'], true);
-			$request = $request->withAttribute(self::LAMBDA_CONTEXT, new Context(
+			$context = new Context(
 				$lambdaContext['awsRequestId'],
 				$lambdaContext['deadlineMs'],
 				$lambdaContext['invokedFunctionArn'],
 				$lambdaContext['traceId']
-			));
+			);
+			$request = $request
+				->withAttribute(self::LAMBDA_CONTEXT, $context)
+				->withAttribute(Tracer::REQUEST_ID, $context->getAwsRequestId());
 		}
 		return $handler->handle($request);
 	}
