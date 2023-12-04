@@ -13,7 +13,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 	public const IGNORE = 'bugsnagHandlerIgnoreField';
 
 	/** @var array<array-key, string> */
-	private array $filter;
+	private array $filter = [];
 
 	public function __construct(
 		protected BugsnagClient $client,
