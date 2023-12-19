@@ -27,7 +27,7 @@ class CallableContextProcessor
 		}
 
 		foreach ($record['context'] as $key => &$value) {
-			if (\is_callable($value)) {
+			if (!is_string($value) && \is_callable($value)) {
 				try {
 					$value = $value();
 				}
