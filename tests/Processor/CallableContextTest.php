@@ -2,6 +2,8 @@
 
 namespace Stefna\Logger\Processor;
 
+use Monolog\Level;
+use Monolog\LogRecord;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -61,6 +63,32 @@ final class CallableContextTest extends TestCase
 		$this->assertTrue($callbackExecuted);
 	}
 
+	public function testStringCallbacksBeingSkipped(): void
+	{
+		$processor = new CallableContextProcessor();
+
+		$logRecord = new LogRecord(
+			new \DateTimeImmutable(),
+			'test',
+			Level::Alert,
+			'message',
+			[
+				'nativeFunction' => 'header',
+				'namespacedFunction' => 'Stefna\Logger\Processor\testingFunction',
+				'deferredValue' => function () {
+					return 'complexValue';
+				}
+			],
+		);
+
+		$modifiedContext = $processor($logRecord);
+		$this->assertSame([
+			'nativeFunction' => 'header',
+			'namespacedFunction' => 'Stefna\Logger\Processor\testingFunction',
+			'deferredValue' => 'complexValue',
+		], $modifiedContext->context);
+	}
+
 	public function testStringFunctionIsNotCalled():void
 	{
 		$stringFunction  = 'Stefna\Logger\Processor\testingFunction';
@@ -82,7 +110,7 @@ final class CallableContextTest extends TestCase
 	}
 }
 
-function testingFunction()
+function testingFunction(): never
 {
-	print("should not print this");
+	CallableContextTest::fail("Shouldn't be called");
 }
