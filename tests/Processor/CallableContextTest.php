@@ -60,4 +60,29 @@ final class CallableContextTest extends TestCase
 
 		$this->assertTrue($callbackExecuted);
 	}
+
+	public function testStringFunctionIsNotCalled():void
+	{
+		$stringFunction  = 'Stefna\Logger\Processor\testingFunction';
+
+		$mainLogger = $this->createMock(LoggerInterface::class);
+		$logger = new ProcessLogger($mainLogger, new CallableContextProcessor());
+		$msg = 'testCallbackValueIsRemoved';
+		$callbackExecuted = false;
+
+		$this->expectOutputString("");
+		$logger->debug($msg, [
+			"section" => $stringFunction,
+			CallableContextProcessor::CALLBACK => function () use (&$callbackExecuted) {
+				$callbackExecuted = true;
+			},
+		]);
+
+		$this->assertTrue($callbackExecuted);
+	}
+}
+
+function testingFunction()
+{
+	print("should not print this");
 }
