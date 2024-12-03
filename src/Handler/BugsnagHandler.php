@@ -20,7 +20,7 @@ class BugsnagHandler extends AbstractProcessingHandler
 		private readonly Level $realLevel = Level::Error,
 		bool $bubble = true,
 		private readonly bool $includeContext = false,
-		private readonly bool $addBreadCrumbs = false
+		private readonly bool $addBreadCrumbs = false,
 	) {
 		parent::__construct($addBreadCrumbs ? Level::Debug : $this->realLevel, $bubble);
 		$this->client->registerCallback([$this, 'cleanStacktrace']);
@@ -128,7 +128,8 @@ class BugsnagHandler extends AbstractProcessingHandler
 		$stacktrace->removeFrame(0);
 
 		// Remove all the trace about Monolog and Stefna\Logger as it's not interesting
-		while (str_starts_with($stacktrace->getFrames()[0]['method'], 'Monolog\\') ||
+		while (
+			str_starts_with($stacktrace->getFrames()[0]['method'], 'Monolog\\') ||
 			str_starts_with($stacktrace->getFrames()[0]['method'], 'Stefna\\Logger\\')
 		) {
 			$stacktrace->removeFrame(0);

@@ -17,7 +17,7 @@ final class ProcessLogger extends AbstractLogger
 
 	public function __construct(
 		private readonly LoggerInterface $logger,
-		callable ...$processors
+		callable ...$processors,
 	) {
 		$this->processors = $processors;
 	}

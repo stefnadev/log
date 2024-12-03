@@ -13,7 +13,7 @@ class FilterLogger extends AbstractLogger
 
 	public function __construct(
 		private readonly LoggerInterface $logger,
-		FilterInterface ...$filters
+		FilterInterface ...$filters,
 	) {
 		$this->filters = $filters;
 	}

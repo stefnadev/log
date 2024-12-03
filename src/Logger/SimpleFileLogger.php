@@ -13,7 +13,6 @@ use Psr\Log\AbstractLogger;
  */
 class SimpleFileLogger extends AbstractLogger
 {
-
 	public function __construct(
 		private readonly string $filePath,
 	) {}

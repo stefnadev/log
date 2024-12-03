@@ -25,7 +25,7 @@ final class DatadogHandler extends AbstractProcessingHandler
 		private readonly string $apiEndpoint = self::DATADOG_LOG_HOST,
 		private readonly Level $realLevel = Level::Error,
 		bool $bubble = true,
-		private readonly bool $addBreadCrumbs = false
+		private readonly bool $addBreadCrumbs = false,
 	) {
 		parent::__construct($this->addBreadCrumbs ? Level::Debug : $this->realLevel, $bubble);
 	}
