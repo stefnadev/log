@@ -10,7 +10,7 @@ class TimeLimitFilter implements FilterInterface
 
 	public function __construct(
 		private readonly CacheInterface $cache,
-		private readonly \DateInterval $interval
+		private readonly \DateInterval $interval,
 	) {}
 
 	/**

@@ -106,7 +106,7 @@ class ConsoleLogger extends AbstractLogger
 			return $message;
 		}
 
-		return $message . ': ' . json_encode($context, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+		return $message . ': ' . json_encode($context, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 	}
 
 	public function setOutput(OutputInterface $output): void

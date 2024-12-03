@@ -77,7 +77,8 @@ final class StripContextProcessor implements ProcessorInterface
 					unset($context[$key]);
 					continue 2;
 				}
-				if ($pos !== false &&
+				if (
+					$pos !== false &&
 					$field['type'] === 'ending' &&
 					str_ends_with($searchKey, $field['field'])
 				) {

@@ -12,7 +12,7 @@ class BufferFilterLogger extends BufferLogger
 
 	public function __construct(
 		private readonly LoggerInterface $logger,
-		FilterInterface ...$filters
+		FilterInterface ...$filters,
 	) {
 		$this->filters = $filters;
 	}
