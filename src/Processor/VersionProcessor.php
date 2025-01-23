@@ -13,17 +13,16 @@ class VersionProcessor implements ProcessorInterface
 
 	public function __invoke(LogRecord $record): LogRecord
 	{
-		$context = $record->context;
 		if ($this->version->release) {
-			$context['release'] = $this->version->release;
+			$record->extra['release'] = $this->version->release;
 		}
 		if ($this->version->version) {
-			$context['version'] = $this->version->version;
+			$record->extra['version'] = $this->version->version;
 		}
 		if ($this->version->commit) {
-			$context['commit'] = $this->version->commit;
+			$record->extra['commit'] = $this->version->commit;
 		}
 
-		return $record->with(context: $context);
+		return $record;
 	}
 }
