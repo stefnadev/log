@@ -11,8 +11,13 @@ final class CloudWatchFormatter extends JsonFormatter
 
 	public function format(LogRecord $record): string
 	{
-		$line = parent::format($record);
-		$requestId = $record->context['requestId'] ?? 'empty';
+		$context = $record->context;
+		$requestId = 'empty';
+		if (isset($context['requestId'])) {
+			$requestId = $context['requestId'];
+			unset($context['requestId']);
+		}
+		$line = parent::format($record->with(context: $context));
 
 		return sprintf(
 			"%s\t%s\t%s\t%s",
